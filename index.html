@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 5 L90 38 L50 95 L10 38 Z' fill='%23775a19'/></svg>"><link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><link rel="stylesheet" href="/src/css/main.css"/></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.03)] transition-all duration-300"><div class="h-20 max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop flex items-center justify-between"><div class="flex items-center gap-4"><a class="flex items-center gap-3 group" data-path="home" href="#"><span class="font-headline-md text-headline-md uppercase tracking-[0.2em] text-primary transition-colors group-hover:text-secondary">Zoskales</span></a></div><nav class="hidden lg:flex items-center gap-8" data-active-classes="text-primary font-semibold"><a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" data-path="about" href="#">About</a><a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" data-path="jewellery" href="#">Jewellery</a><a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" data-path="engagement" href="#">Engagement</a><a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" data-path="wedding" href="#">Wedding</a><a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" data-path="contact-us" href="#">Contact Us</a></nav><div class="flex items-center gap-5"><button id="membership-btn" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 border border-primary text-primary font-label-caps text-[11px] uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all duration-300" type="button"><span class="material-symbols-outlined text-[18px]">workspace_premium</span><span>Membership</span></button><button aria-label="Search" class="text-on-surface-variant hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[22px]">search</span></button><button aria-label="Concierge Service" class="text-on-surface-variant hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[22px]">support_agent</span></button><button aria-label="Shopping Bag" class="text-on-surface-variant hover:text-primary transition-colors flex items-center relative" type="button"><span class="material-symbols-outlined text-[22px]">shopping_bag</span></button><div class="pl-2"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WWrJf_7sHwD2ia9ut6PiB8NTcX_uGDox4UVNPHz4OVaD5C49teOyGBeKVTHcZMIN7WEsN8gvxyMSN5fSYk9u0QlR13SvWc5qbrRYw2gQeLCo8vybqVqvcaN6CIBkB_GH9zvDf4B4htRScL0wSSCmEXbtnkBjwDwSqqqRTUBumk2F9a3OBVbaq6UhzdBjayFtWxJdeg0DSXq_z9PhIMxY2shymX8C3al9VxZcD1mvXqJkoVtI8XlGp_erWaYvB2yCHedBJssQ7a"/></div></div></div></header><main class="w-full pt-20 bg-background"><div class="flex flex-col w-full">
+<!-- SECTION 1: FEATURED STORIES SLIDER / HERO -->
+<section class="relative w-full overflow-hidden bg-surface text-on-surface py-12 lg:py-20">
+<div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop relative">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center min-h-[640px]">
+<!-- Left Editorial Narrative -->
+<div class="lg:col-span-6 flex flex-col justify-center space-y-6 z-10">
+<div class="flex items-center gap-3">
+<span class="w-8 h-[1px] bg-secondary"></span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.25em] text-secondary">
+              Heritage Atelier � Story 01 / 03
+            </span>
+</div>
+<div class="space-y-4">
+<h1 class="font-display-lg text-headline-lg lg:text-display-lg text-primary tracking-tight leading-[1.05]">
+              20 Years of Sparkle, <br class="hidden sm:inline"/>
+<span class="italic font-normal">Forever to Go</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+              Rooted in the ancient regality of Ethiopian royal heritage and forged through master artisanal diamond metallurgy. Every stone is conflict-free, hand-selected, and elevated to museum reverence.
+            </p>
+</div>
+<!-- CTAs -->
+<div class="flex flex-wrap items-center gap-4 pt-4">
+<button id="discover-collection-btn" class="inline-flex items-center justify-center px-8 py-4 bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-widest hover:bg-secondary transition-colors duration-300">
+              Discover the Collection
+            </button>
+<a class="inline-flex items-center justify-center px-8 py-4 bg-surface-container-low text-primary font-label-caps text-label-caps uppercase tracking-widest hover:bg-surface-container-high transition-colors duration-300" href="#consultation-section">
+              Book a Private Consultation
+            </a>
+</div>
+<!-- Slider Pagination Dots & Monogram Accent -->
+<div class="flex items-center gap-6 pt-8">
+<div class="flex items-center gap-2">
+<button aria-label="Slide 1" class="w-10 h-1 bg-primary transition-all"></button>
+<button aria-label="Slide 2" class="w-4 h-1 bg-surface-variant hover:bg-outline transition-all"></button>
+<button aria-label="Slide 3" class="w-4 h-1 bg-surface-variant hover:bg-outline transition-all"></button>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
+              The Royal Aksum Collection
+            </span>
+</div>
+</div>
+<!-- Right Visual Showcase: Editorial Imagery & Brand Monogram -->
+<div class="lg:col-span-6 relative mt-8 lg:mt-0 flex justify-center items-center">
+<!-- Ambient luxury backdrop layer -->
+<div class="absolute -inset-4 bg-gradient-to-tr from-surface-container-high/60 to-transparent -z-10 rounded-xl"></div>
+<div class="relative w-full max-w-lg aspect-[4/5] bg-surface-container-low overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105" data-alt="Editorial close portrait of an elegant Ethiopian noble woman adorned in intricate handcrafted diamond necklace and matching earrings from Zoskales Diamonds, cinematic museum lighting, deep charcoal textured backdrop, haute couture African royal elegance, sharp focus on flawless diamond cuts." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4xSOyqOr8DA5WEFG1YEJASo3DKQiZT-7bNPjtSOMBwuIHk28NS805AWAFIPRcpLrL715U-z33wBhQxFCA-aabojlya01e1jf_YpY5dQCfGYUWT2h2zNJuwp2ndUORo0JEoLiX9C835EzIhlM-V7Crg-ilHWHGqc6EMEzjRr6i8I3emGVfiaKVR-0GUYh2a5ix0n3-LirEO1fn8y822m6WzTm0j3xmOzRnGltecLAB6VuA4Q5R76iP"/>
+<!-- Monogram Floating Seal Card -->
+<div class="absolute bottom-6 left-6 right-6 bg-surface-container-lowest/90 backdrop-blur-md p-6 flex items-center justify-between shadow-lg">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary text-on-primary flex items-center justify-center font-display-lg text-2xl font-bold">
+                  Z
+                </div>
+<div>
+<div class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Aura of Aksum</div>
+<div class="font-body-md text-sm text-on-surface-variant">Master Hallmarked High Jewellery</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-2xl">verified</span>
+</div>
+</div>
+<!-- Carousel Controls (< and >) -->
+<button aria-label="Previous Slide" class="absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-surface-container-lowest shadow-md flex items-center justify-center text-primary hover:text-secondary transition-colors" type="button">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button aria-label="Next Slide" class="absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-surface-container-lowest shadow-md flex items-center justify-center text-primary hover:text-secondary transition-colors" type="button">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: TWO-COLUMN SPLIT (DIAMOND SHAPES & LEARN ABOUT THE 4Cs) -->
+<section class="w-full py-16 lg:py-24 bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+<!-- Column 1: Diamond Shapes -->
+<div class="flex flex-col justify-between bg-surface p-8 lg:p-12 shadow-sm">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="w-6 h-[1px] bg-secondary"></span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary">Couture Geometry</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Diamond Shapes</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">
+              Explore meticulously cut silhouettes crafted to optimize internal reflection, fire, and optical symmetry.
+            </p>
+<!-- 6 Shape Interactive Cards Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+<!-- Round Brilliant -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<polygon points="12 2 19 8 19 16 12 22 5 16 5 8 12 2"></polygon>
+<circle cx="12" cy="12" r="4"></circle>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Round</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">57 Facets</span>
+</div>
+<!-- Emerald Cut -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="14" x="5" y="3"></rect>
+<rect height="12" width="8" x="8" y="6"></rect>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Emerald</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">Step Cut</span>
+</div>
+<!-- Pear Shape -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<path d="M12 2 C8 7 6 12 6 16 A6 6 0 0 0 18 16 C18 12 16 7 12 2 Z"></path>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Pear</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">Tear Silhouette</span>
+</div>
+<!-- Marquise -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<path d="M12 2 C18 7 18 17 12 22 C6 17 6 7 12 2 Z"></path>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Marquise</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">Navette Cut</span>
+</div>
+<!-- Oval -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<ellipse cx="12" cy="12" rx="7" ry="9"></ellipse>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Oval</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">Elongated Fire</span>
+</div>
+<!-- Cushion -->
+<div class="group bg-surface-container-lowest p-4 flex flex-col items-center text-center hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-pointer shadow-sm">
+<svg class="w-10 h-10 mb-3 text-secondary group-hover:text-secondary-fixed transition-colors" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 24 24">
+<rect height="16" rx="5" width="16" x="4" y="4"></rect>
+<circle cx="12" cy="12" r="3.5"></circle>
+</svg>
+<span class="font-label-caps text-label-caps uppercase tracking-wider font-semibold">Cushion</span>
+<span class="text-xs text-on-surface-variant group-hover:text-primary-fixed mt-1">Pillow Antique</span>
+</div>
+</div>
+</div>
+<div class="pt-4 flex items-center justify-between">
+<a class="inline-flex items-center gap-3 font-label-caps text-label-caps uppercase tracking-widest text-primary hover:text-secondary transition-colors" href="#">
+<span>Click on Discover � Explore Shapes</span>
+<span class="material-symbols-outlined text-sm">north_east</span>
+</a>
+</div>
+</div>
+<!-- Column 2: Learn About the 4Cs -->
+<div class="flex flex-col justify-between bg-surface p-8 lg:p-12 shadow-sm">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="w-6 h-[1px] bg-secondary"></span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary">Gemological Mastery</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Learn About the 4Cs</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Our gemologists apply rigorous ethical grading across cut, clarity, color, and carat weight ensuring an authentic provenance.
+            </p>
+<!-- Macro Photo Preview Banner -->
+<div class="relative w-full h-44 bg-surface-container overflow-hidden mb-6">
+<img class="w-full h-full object-cover" data-alt="Macro flat-lay photograph of loose ethical brilliant diamonds with wooden jeweller loupe, brass tweezers, and artisan parchment tag stating Ethically Sourced Diamonds, warm light aesthetic, soft linen backdrop, exquisite crystalline facets." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6h-lWELUX8jw8RjeCq_KT2VTwCmWXaaSb_STNp5ZdLqxgcb35FG8QcnIm2PvQ-mAAPydmX-GuADYH3eO1toOvhb6fQ_DfXmESnHBsrGcgtVVsFEeiDmQP41mI2tSK4F-O-nBZRlCARVWSDuBE6dsS784mmCvKr-2VNWbsrJxiqqLC5ZhTcSJHtUSNOzHSIP_7gSE-3asX8FrD8FLRfqQrhkSitBevsPPa7llGf19Ot-wgPvdR9Fyc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent flex items-end p-4">
+<span class="font-label-caps text-xs text-surface uppercase tracking-widest">
+                  100% Conflict-Free &amp; Traceable Aksumite Origin
+                </span>
+</div>
+</div>
+<!-- 4Cs Pillars Breakdown -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="p-3 bg-surface-container-lowest">
+<div class="font-label-caps text-xs text-secondary uppercase font-semibold">Cut</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-snug">Graded Excellent &amp; Ideal for optimum brilliance and fire.</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<div class="font-label-caps text-xs text-secondary uppercase font-semibold">Color</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-snug">D through F completely colorless natural diamonds.</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<div class="font-label-caps text-xs text-secondary uppercase font-semibold">Clarity</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-snug">FL to VS1 eye-clean stones with zero visible inclusions.</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<div class="font-label-caps text-xs text-secondary uppercase font-semibold">Carat</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-snug">Precision balanced proportion maximizing apparent spread.</p>
+</div>
+</div>
+</div>
+<div class="pt-4 flex items-center justify-between">
+<a class="inline-flex items-center gap-3 font-label-caps text-label-caps uppercase tracking-widest text-primary hover:text-secondary transition-colors" href="#">
+<span>Click on Discover � Understand the 4Cs</span>
+<span class="material-symbols-outlined text-sm">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: ENGAGEMENT RINGS SLIDER -->
+<section class="w-full py-16 lg:py-24 bg-surface" id="engagement-section">
+<div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop">
+<!-- Section Header with Slider Navigation Controls -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em] text-secondary">
+            Bespoke Bridal
+          </span>
+<h2 class="font-headline-lg text-headline-lg text-primary mt-2">
+            Engagement Rings
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+            Handcrafted in 18k Ethiopian Gold &amp; Platinum 950
+          </p>
+</div>
+<div class="flex items-center gap-3">
+<button aria-label="Scroll left" class="w-12 h-12 bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-primary transition-all flex items-center justify-center shadow-sm" type="button">
+<span class="material-symbols-outlined">west</span>
+</button>
+<button aria-label="Scroll right" class="w-12 h-12 bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-primary transition-all flex items-center justify-center shadow-sm" type="button">
+<span class="material-symbols-outlined">east</span>
+</button>
+</div>
+</div>
+<!-- Engagement Rings Grid View -->
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest group flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 ring-1 ring-transparent hover:ring-secondary/30">
+<div class="relative aspect-square w-full bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Solitaire brilliant round diamond engagement ring set on a micro-pav� band of 18k Ethiopian yellow gold, pristine white velvet display block, soft atmospheric studio lighting, high resolution fine jewellery macro." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPMLAzR0vlgCTmQ_xAK1kTCmRa9D3nN2xsyUfiHpVg7AOGGKFYYX3p9wXZQ4zK29k-q46Fxwnr1FMYMxQZg6PfA6s65Z0CywjBqymnpbDiwdD893dYYG4ZV0MyTgXI_QfigjtRuDk-_VUOIubk80ZoOTGvi6EWW5F1dZSa1_zC-sM5-Ph9HsYTzruqE1HPLvHa6X-QWCgD7h9J5vKHYAv4IOOuKDGTPO6eeZKTE6Y27-7acSPG3OHV"/>
+<span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm font-label-caps text-[10px] uppercase tracking-widest px-3 py-1 text-primary">
+              Signature
+            </span>
+</div>
+<div class="p-6 flex flex-col space-y-3">
+<div class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">18K Yellow Gold � Platinum</div>
+<h3 class="font-headline-md text-xl text-primary font-medium">Solitaire Brilliant Pav�</h3>
+<div class="font-body-md text-sm text-secondary font-semibold">Price Upon Request</div>
+<div class="pt-4">
+<div class="flex gap-3 pt-4">
+<a class="inline-flex items-center gap-2 font-label-caps text-label-caps uppercase tracking-widest text-primary group-hover:text-secondary transition-colors" href="#">
+<span>Details</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+<button class="try-on-btn inline-flex items-center gap-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors" data-name="Solitaire Brilliant Pav�" data-category="ring" data-desc="Solitaire brilliant round diamond engagement ring set on a micro-pav� band of 18k Ethiopian yellow gold">
+<span class="material-symbols-outlined text-sm">checkroom</span>
+<span>Try On</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest group flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 ring-1 ring-transparent hover:ring-secondary/30">
+<div class="relative aspect-square w-full bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Vintage emerald cut halo diamond ring crafted in solid platinum with baguette side accents, resting on raw volcanic obsidian stone, soft shadows and luminous refraction, ultra luxury bridal collection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXRb9ivNbvNFSu6Sj1vDGmNt25mRFL_aGC6hXo6JeZViQefCCgGvyg8N_Q5Fem9Zr0OXn3U9OCo9HUyoRfWdViaAze6Qi3C3u07tH6CF24Btv33d-mXzzpm7IT4lSY9ttTLu1n9a_KF7PS6kj5Wu1omE2paI-mkzYaJootKlN2igR1yOyR-mEmAyzK2fsMAQcAHearYlrWpNJHjaSIhIOXUbQsBEjfdRnuLe7nD_XX3bLdD-BzqHpo"/>
+<span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm font-label-caps text-[10px] uppercase tracking-widest px-3 py-1 text-primary">
+              Heirloom
+            </span>
+</div>
+<div class="p-6 flex flex-col space-y-3">
+<div class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">Pure Platinum 950</div>
+<h3 class="font-headline-md text-xl text-primary font-medium">Vintage Emerald Cut Halo</h3>
+<div class="font-body-md text-sm text-secondary font-semibold">Price Upon Request</div>
+<div class="pt-4">
+<div class="flex gap-3 pt-4">
+<a class="inline-flex items-center gap-2 font-label-caps text-label-caps uppercase tracking-widest text-primary group-hover:text-secondary transition-colors" href="#">
+<span>Details</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+<button class="try-on-btn inline-flex items-center gap-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors" data-name="Vintage Emerald Cut Halo" data-category="ring" data-desc="Vintage emerald cut halo diamond ring crafted in solid platinum with baguette side accents">
+<span class="material-symbols-outlined text-sm">checkroom</span>
+<span>Try On</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest group flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 ring-1 ring-transparent hover:ring-secondary/30">
+<div class="relative aspect-square w-full bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Royal Queen pear shaped diamond engagement ring with a hidden halo and twisted diamond band in warm rose gold, editorial top-down lighting, minimal clean luxury jewellery composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR-RM-ybABhoRmMcalpVcoBCZgJgjGxrLyW-e4qkkfztuS3D8DHVp7844uxZaTWECN6hFhKNXbucryFCNKGI2iUlT7q8_F61dGMj0v2uRlb9VkruaY4g7mxiw8ZPgl-y_y_fG1WmI9DfvgCIa13YWtD22TgdHsQ7jemeAkoyz74pknEAt26LgoF82S1l4w1504xvO7LuaiMsMPCp48HNcsObtT9WjqFJauL68G9PnjaJXY0u9aUOEG"/>
+<span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm font-label-caps text-[10px] uppercase tracking-widest px-3 py-1 text-primary">
+              Limited
+            </span>
+</div>
+<div class="p-6 flex flex-col space-y-3">
+<div class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">18K Warm Rose Gold</div>
+<h3 class="font-headline-md text-xl text-primary font-medium">Royal Queen Pear Ring</h3>
+<div class="font-body-md text-sm text-secondary font-semibold">Price Upon Request</div>
+<div class="pt-4">
+<div class="flex gap-3 pt-4">
+<a class="inline-flex items-center gap-2 font-label-caps text-label-caps uppercase tracking-widest text-primary group-hover:text-secondary transition-colors" href="#">
+<span>Details</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+<button class="try-on-btn inline-flex items-center gap-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors" data-name="Royal Queen Pear Ring" data-category="ring" data-desc="Royal Queen pear shaped diamond engagement ring with hidden halo and twisted diamond band in warm rose gold">
+<span class="material-symbols-outlined text-sm">checkroom</span>
+<span>Try On</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest group flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 ring-1 ring-transparent hover:ring-secondary/30">
+<div class="relative aspect-square w-full bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Avant-garde bespoke two-stone Toi et Moi engagement ring pairing a vivid oval diamond and an emerald cut diamond side by side on an open bypass platinum band, high editorial craftsmanship, museum quality lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfSk82FBNDUya2XV7JpClyMDuZHPInqMinucwko9_c6Aq2Z5BJYnsmL7_PXpwqid7H0zBEpTMElyxjkfQlLwjfCE1AzHy8zj8bDpXgUD_LvuRTDMar5dejBC7VNcDjMFHXMkoSEgGCyMH3KPyHKEGEz_Y-FS9tLAWjxTGjUXAwQ9K1JzPR8IwaGkPscCbqOGR74cSYP9Q7Z2I6d-_rJYzQsXNCN7s-YAcvvgk1LlJyUZK1d8Y3zqwi"/>
+<span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm font-label-caps text-[10px] uppercase tracking-widest px-3 py-1 text-primary">
+              Bespoke
+            </span>
+</div>
+<div class="p-6 flex flex-col space-y-3">
+<div class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">Platinum &amp; Yellow Gold</div>
+<h3 class="font-headline-md text-xl text-primary font-medium">Two-Stone Toi et Moi</h3>
+<div class="font-body-md text-sm text-secondary font-semibold">Price Upon Request</div>
+<div class="pt-4">
+<div class="flex gap-3 pt-4">
+<a class="inline-flex items-center gap-2 font-label-caps text-label-caps uppercase tracking-widest text-primary group-hover:text-secondary transition-colors" href="#">
+<span>Details</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+<button class="try-on-btn inline-flex items-center gap-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors" data-name="Two-Stone Toi et Moi" data-category="ring" data-desc="Avant-garde bespoke two-stone Toi et Moi engagement ring pairing a vivid oval diamond and an emerald cut diamond on an open bypass platinum band">
+<span class="material-symbols-outlined text-sm">checkroom</span>
+<span>Try On</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: TRIO PRODUCT SELECTION CARDS -->
+<section class="w-full py-16 lg:py-24 bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-caps text-label-caps uppercase tracking-[0.25em] text-secondary">
+          Curated Portfolios
+        </span>
+<h2 class="font-headline-lg text-headline-lg text-primary mt-2">
+          The Zoskales Collections
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+          Masterpieces designed to immortalize ceremonial vows and elevate everyday presence.
+        </p>
+</div>
+<!-- 3-Column Trio Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Column 1: Wedding Day Jewellery -->
+<div class="bg-surface-container-lowest flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all duration-300">
+<div>
+<div class="relative aspect-[3/4] w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" data-alt="Editorial close-up of a royal bride wearing a cascading diamond bib statement necklace and matching chandelier diamond drop earrings with embroidered Ethiopian silk gown, opulent editorial lighting, high fashion photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnKt83_ov1PxW4hi6qCFQuhhS6sZ9spykSHTsDqMURcqebfp2nDdG-tqGRz2z2sRP36C6bZDEEP_oEW1rKKMofr1l0UBEd81YKXGMEoIoQZkRDaXQ-PMjsweJgtde7Yp2OcW8Z7o4W08JoPmB248usS8uYtHHhTmA4j1bCkLs9KdkWMofyKCqPm_dVmCc_gr91C0jsi8zXJ33sHHCJexDtFkmN4FPGL26oop3VW2xrrh8_vHsYDFb3"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary-fixed">
+                  Ceremonial Adornment
+                </span>
+<h3 class="font-headline-md text-2xl text-on-primary mt-1">
+                  Wedding Day Jewellery
+                </h3>
+</div>
+</div>
+<div class="p-6">
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                Opulent statement collared necklaces, graduated bridal drop earrings, and flexible eternity tennis bracelets crafted for royal wedding processions.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0">
+<a class="inline-flex items-center justify-between w-full py-3 px-4 bg-surface-container hover:bg-primary hover:text-on-primary font-label-caps text-label-caps uppercase tracking-widest text-primary transition-colors" href="#">
+<span>Click on Discover</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Column 2: Wedding Bands -->
+<div class="bg-surface-container-lowest flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all duration-300">
+<div>
+<div class="relative aspect-[3/4] w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" data-alt="Artisanal pairing of men's hammered textured raw Ethiopian gold wedding band together with an eternity pav� diamond band placed gracefully on weathered desert sandstone, soft golden hour sunlight, architectural jewelry detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9pLTFaUqVyjrQFfbXFx0z7CmcdKKeZAhqQN6K9bkw4_i-eox36K5-MGBQg9Wh3I9GXIXB1r7fwUf4Bo1LXMA2lyfFBLYjWxUuSs2Aow-6Le-bFl8C28SdUJb2jA3cSY2NW_QM8oIg3rLNS92lKR0xLZQWSfnTnFoe3E2yR3VfQsjkvhFvj9_tdo4uhq9ioYI1P6YECId5doP_r9eXlFqKCS79iDPQGFyJOXaZo_Mebg-4w5x55XcZ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary-fixed">
+                  Eternal Alliances
+                </span>
+<h3 class="font-headline-md text-2xl text-on-primary mt-1">
+                  Wedding Bands
+                </h3>
+</div>
+</div>
+<div class="p-6">
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                Classic comfort-fit bands, unbroken pav� eternity rings, and hand-hammered men's textured gold bands imbued with timeless character.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0">
+<a class="inline-flex items-center justify-between w-full py-3 px-4 bg-surface-container hover:bg-primary hover:text-on-primary font-label-caps text-label-caps uppercase tracking-widest text-primary transition-colors" href="#">
+<span>Click on Discover</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Column 3: Explore Our Jewellery -->
+<div class="bg-surface-container-lowest flex flex-col justify-between group shadow-sm hover:shadow-xl transition-all duration-300">
+<div>
+<div class="relative aspect-[3/4] w-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" data-alt="Modern Ethiopian luxury jewelry ensemble showcasing geometric gold and diamond cufflinks, delicate pendant necklace, and sculptural signet rings laid out on dark marble, minimalist editorial presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjgcToyHhkcCKzlIzg8MZe20IXsJi5V_9SBvIwz1ace_IiFcgzY2T5P6DAnUxnpBxlOcH3ucP-d9VoC_qsCvPK_PjcBk3_kRwMthLOT4IGDBeil6vDfTyP1p61i4vTzrrOltsWBgzaB4Txo5hmxeHxXfigCPqIDG5YWOr4ZnbpQSmiL0i32N8c55uY4GIBdIxY5CEagJBNURaUXA6yGIirn5uX8CDyh6motUe5WbN2h0WyYbq-LyCm"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary-fixed">
+                  Daily Splendor
+                </span>
+<h3 class="font-headline-md text-2xl text-on-primary mt-1">
+                  Explore Our Jewellery
+                </h3>
+</div>
+</div>
+<div class="p-6">
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                Fine pendants with talismanic significance, signature men's cufflinks, and everyday solitaires meant to be worn as personal power icons.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0">
+<a class="inline-flex items-center justify-between w-full py-3 px-4 bg-surface-container hover:bg-primary hover:text-on-primary font-label-caps text-label-caps uppercase tracking-widest text-primary transition-colors" href="#">
+<span>Click on Discover</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: CONTACT US & BOUTIQUE CONCIERGE / MAP -->
+<section class="w-full py-16 lg:py-24 bg-surface" id="consultation-section">
+<div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+<!-- Left: Private Consultation Form -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-8 lg:p-12 shadow-md">
+<div class="mb-8">
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em] text-secondary">
+              Atelier Appointments
+            </span>
+<h2 class="font-headline-lg text-headline-lg text-primary mt-1">
+              Book a Private Consultation
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+              Meet privately with a dedicated Zoskales diamond curator in our private salon or through a secure virtual vault session.
+            </p>
+</div>
+<form id="consultation-form" class="space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Full Name *
+                </label>
+<input name="name" class="w-full bg-surface-container-low px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all" placeholder="e.g. Almaz Bekele" required="" type="text"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Email Address *
+                </label>
+<input name="email" class="w-full bg-surface-container-low px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all" placeholder="name@domain.com" required="" type="email"/>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Phone Number
+                </label>
+<input name="phone" class="w-full bg-surface-container-low px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all" placeholder="+251 91 234 5678" type="tel"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Consultation Type *
+                </label>
+<select name="consult_type" class="w-full bg-surface-container-low px-4 py-3 text-on-surface focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all">
+<option>Bespoke Engagement Ring</option>
+<option>Wedding Band Pairing</option>
+<option>High Jewellery Custom Order</option>
+<option>Private Concierge Investment Diamond</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Preferred Date
+                </label>
+<input name="preferred_date" class="w-full bg-surface-container-low px-4 py-3 text-on-surface focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all" type="date"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                  Preferred Showroom
+                </label>
+<select name="showroom" class="w-full bg-surface-container-low px-4 py-3 text-on-surface focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all">
+<option>Addis Ababa Flagship Salon</option>
+<option>Bole International Private Suite</option>
+<option>London Mayfair Private Salon</option>
+<option>Virtual High-Definition Vault</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps uppercase tracking-wider text-primary mb-2">
+                Special Requests or Carat Range
+              </label>
+<textarea name="message" class="w-full bg-surface-container-low px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:bg-surface focus:outline-none focus:ring-1 focus:ring-secondary transition-all resize-none" placeholder="Detail preferred shapes, gold karatage, or special commemorative dates..." rows="3"></textarea>
+</div>
+<p id="consultation-status" class="hidden text-sm py-3 px-4 rounded-xl text-center"></p>
+<button id="consultation-submit" class="w-full py-4 bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-[0.2em] hover:bg-secondary transition-colors duration-300 shadow-md disabled:opacity-60" type="submit">
+              Submit Request
+            </button>
+</form>
+</div>
+<!-- Right: Boutique Details & Map Preview Card -->
+<div class="lg:col-span-5 flex flex-col space-y-8">
+<!-- Map Preview Card -->
+<div class="bg-surface-container-lowest p-6 shadow-md">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-primary">
+                Flagship Atelier
+              </span>
+<span class="flex items-center gap-1 text-xs text-secondary font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                Open by Appointment
+              </span>
+</div>
+<!-- Static Map Container Pipeline -->
+<div class="w-full h-64 bg-surface-container bg-cover bg-center relative overflow-hidden mb-6" data-location="Bole Road, Addis Ababa, Ethiopia" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzB8JzK5IKTqQjaSBXJ5L_J_LNbc3AlGdaykmZCRbBEpAewVACQ0rkS1wrXCjDnGN2jpK_aUhklZdX3aRdwlfy-xlM1RQDAAlaJ6XdVqbaMEn4vuIGzOFt03u4n56ifbHuJornhv6TKpYFDCfEs-yO5E5gbaxW872QJH0qRGhYMm0UkEz-dKk49mNJxdfJ6sRaTHEuTfBx3zW54scNKVuv-WDzolygA1AtUZHVeVcMX0-_EuG4c1uM')">
+<div class="absolute inset-0 bg-primary/20 flex items-center justify-center">
+<div class="bg-surface/95 px-4 py-2 text-center shadow-lg">
+<span class="material-symbols-outlined text-secondary block text-2xl">location_on</span>
+<span class="font-label-caps text-[11px] uppercase tracking-widest text-primary font-bold">
+                    Zoskales Addis Ababa
+                  </span>
+</div>
+</div>
+</div>
+<!-- Address & Hours -->
+<div class="space-y-4 text-sm text-on-surface-variant">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">storefront</span>
+<div>
+<strong class="text-primary block font-medium">Bole Medhanialem Avenue</strong>
+                  Floor 11, The Sovereign Tower, Addis Ababa, Ethiopia
+                </div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">schedule</span>
+<div>
+<strong class="text-primary block font-medium">Visiting Hours</strong>
+                  Monday � Saturday: 10:00 � 19:00 (EAT)<br/>
+                  Sunday: Private Curations Exclusively
+                </div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5">call</span>
+<div>
+<strong class="text-primary block font-medium">Direct Concierge</strong>
+                  +251 (0) 11 667 8900 � concierge@zoskalesdiamonds.com
+                </div>
+</div>
+</div>
+</div>
+<!-- Ethical Guarantee Trust Seal -->
+<div class="p-6 bg-surface-container-high text-on-surface flex items-center gap-5">
+<span class="material-symbols-outlined text-secondary text-4xl">verified_user</span>
+<div>
+<h4 class="font-label-caps text-label-caps uppercase tracking-wider text-primary font-semibold">
+                Guaranteed Conflict-Free &amp; Hallmarked
+              </h4>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                Complies with the Kimberley Process Certification Scheme and authenticated by the Geological Institute of Ethiopia.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Membership Modal -->
+<div id="membership-modal" class="hidden fixed inset-0 z-[9998] items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+  <div id="membership-card" class="bg-surface rounded-3xl shadow-2xl max-w-lg w-full max-h-[92vh] overflow-y-auto relative opacity-0 translate-y-8 scale-95 transition-all duration-500 ease-out">
+    <button id="membership-close-btn" class="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-surface-container-high transition-colors" style="color:var(--md-sys-color-outline)">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div id="membership-content" class="p-8 sm:p-10"></div>
+  </div>
+</div>
+<style>
+@keyframes mz-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.mz-loading-bar { background: linear-gradient(90deg, var(--md-sys-color-surface-container) 25%, var(--md-sys-color-secondary-fixed-dim) 50%, var(--md-sys-color-surface-container) 75%); background-size: 200% 100%; animation: mz-shimmer 1.4s ease infinite; }
+@keyframes mz-spin { to { transform: rotate(360deg); } }
+.mz-spin { animation: mz-spin 1s linear infinite; }
+@keyframes mz-fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.mz-step-enter { animation: mz-fade-up 0.45s ease both; }
+#membership-modal.open { display: flex; }
+#membership-card.shown { opacity: 1 !important; transform: translateY(0) scale(1) !important; }
+</style>
+<div id="tryon-modal" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div id="tryon-content" class="bg-surface rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto relative">
+    <button id="tryon-close-btn" class="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-surface-container-high transition-colors" style="color:var(--md-sys-color-outline)">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+</div>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+#tryon-modal { transition: opacity 0.2s ease; }
+</style>
+<script type="module">
+  import { TryOnModal } from '/src/tryon/index.js';
+
+  const modal = new TryOnModal();
+
+  document.getElementById('discover-collection-btn')?.addEventListener('click', () => {
+    modal.open({ name: 'Royal Queen Pear Ring', tryOnCategory: 'ring', desc: 'Royal Queen pear shaped diamond engagement ring with hidden halo', tagline: 'Handcrafted in 18K Warm Rose Gold' });
+  });
+
+  document.querySelectorAll('.try-on-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.open({
+        name: btn.dataset.name,
+        tryOnCategory: btn.dataset.category,
+        desc: btn.dataset.desc,
+        tagline: btn.dataset.desc
+      });
+    });
+  });
+
+  document.getElementById('tryon-close-btn')?.addEventListener('click', () => modal.close());
+  document.getElementById('tryon-modal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) modal.close();
+  });
+
+  // ===== MEMBERSHIP MODAL =====
+  const mModal = document.getElementById('membership-modal');
+  const mCard = document.getElementById('membership-card');
+  const mContent = document.getElementById('membership-content');
+  let mPhone = '';
+
+  function openMembership() {
+    mModal.classList.add('open');
+    mModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => setTimeout(() => mCard.classList.add('shown'), 30));
+    renderMembershipStep('intro');
+  }
+  function closeMembership() {
+    mCard.classList.remove('shown');
+    setTimeout(() => {
+      mModal.classList.add('hidden');
+      mModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }, 300);
+  }
+  document.getElementById('membership-btn')?.addEventListener('click', openMembership);
+  document.getElementById('membership-close-btn')?.addEventListener('click', closeMembership);
+  mModal?.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeMembership(); });
+
+  function setM(html) {
+    mContent.innerHTML = `<div class="mz-step-enter">${html}</div>`;
+    bindMembershipStep();
+  }
+
+  function renderMembershipStep(step, data = {}) {
+    if (step === 'intro') {
+      setM(`
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl" style="color:var(--md-sys-color-secondary)">workspace_premium</span>
+          </div>
+          <h3 class="text-2xl mb-2" style="font-family:'Bodoni Moda',serif">Zoskales Premium Membership</h3>
+          <p class="text-sm leading-relaxed mb-6" style="color:var(--md-sys-color-outline)">
+            Unlock access to exclusive Zoskales premium ring and necklace designs � visible only to approved members.
+          </p>
+          <ul class="text-left text-sm space-y-3 mb-8 p-5 rounded-2xl" style="background:var(--md-sys-color-surface-container)">
+            <li class="flex gap-3"><span class="material-symbols-outlined text-secondary text-lg">diamond</span><span>Private preview of premium designs</span></li>
+            <li class="flex gap-3"><span class="material-symbols-outlined text-secondary text-lg">diamond</span><span>One-time access code sent on approval</span></li>
+            <li class="flex gap-3"><span class="material-symbols-outlined text-secondary text-lg">diamond</span><span>Time-limited gallery viewing</span></li>
+          </ul>
+          <label class="block text-left font-label-caps text-[11px] uppercase tracking-widest mb-2" style="color:var(--md-sys-color-outline)">Enter your phone number</label>
+          <input id="mz-phone" type="tel" inputmode="tel" placeholder="+251 9XX XXX XXX" class="w-full px-5 py-4 rounded-xl border text-sm mb-4 focus:outline-none focus:ring-2" style="border-color:var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-lowest)" />
+          <button id="mz-submit" class="w-full py-4 rounded-full text-sm font-medium transition-all hover:scale-[1.02]" style="background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)">
+            Request Access
+          </button>
+        </div>`);
+    }
+
+    if (step === 'loading') {
+      setM(`
+        <div class="text-center py-8">
+          <div class="w-14 h-14 mx-auto mb-5 rounded-full flex items-center justify-center" style="background:var(--md-sys-color-surface-container)">
+            <span class="material-symbols-outlined text-2xl mz-spin" style="color:var(--md-sys-color-secondary)">progress_activity</span>
+          </div>
+          <h3 class="text-xl mb-2" style="font-family:'Bodoni Moda',serif">Checking your number�</h3>
+          <p class="text-sm mb-6" style="color:var(--md-sys-color-outline)">Verifying membership permission in our database</p>
+          <div class="mz-loading-bar h-1.5 w-48 mx-auto rounded-full"></div>
+        </div>`);
+    }
+
+    if (step === 'pending') {
+      setM(`
+        <div class="text-center py-6">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center" style="background:var(--md-sys-color-secondary-container)">
+            <span class="material-symbols-outlined text-3xl" style="color:var(--md-sys-color-on-secondary-container)">hourglass_top</span>
+          </div>
+          <h3 class="text-xl mb-2" style="font-family:'Bodoni Moda',serif">Permission Awaiting</h3>
+          <p class="text-sm mb-3" style="color:var(--md-sys-color-outline)">Your membership request for <strong>${data.phone}</strong> is awaiting admin approval.</p>
+          <p class="text-xs mb-6 p-4 rounded-xl" style="background:var(--md-sys-color-surface-container);color:var(--md-sys-color-outline)">Once approved, reopen this modal with the same number to receive your one-time access code.</p>
+          <button id="mz-done" class="w-full py-4 rounded-full text-sm font-medium border" style="border-color:var(--md-sys-color-outline)">Close</button>
+        </div>`);
+    }
+
+    if (step === 'declined') {
+      setM(`
+        <div class="text-center py-6">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center" style="background:var(--md-sys-color-error-container)">
+            <span class="material-symbols-outlined text-3xl" style="color:var(--md-sys-color-on-error-container)">block</span>
+          </div>
+          <h3 class="text-xl mb-2" style="font-family:'Bodoni Moda',serif">Request Declined</h3>
+          <p class="text-sm mb-6" style="color:var(--md-sys-color-outline)">${data.message || 'Your request was declined.'}</p>
+          <button id="mz-done" class="w-full py-4 rounded-full text-sm font-medium border" style="border-color:var(--md-sys-color-outline)">Close</button>
+        </div>`);
+    }
+
+    if (step === 'otp') {
+      setM(`
+        <div class="text-center py-6">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full flex items-center justify-center" style="background:var(--md-sys-color-secondary-container)">
+            <span class="material-symbols-outlined text-3xl" style="color:var(--md-sys-color-on-secondary-container)">sms</span>
+          </div>
+          <h3 class="text-xl mb-2" style="font-family:'Bodoni Moda',serif">Enter Access Code</h3>
+          <p class="text-sm mb-6" style="color:var(--md-sys-color-outline)">Your membership was approved. Enter the one-time code for <strong>${data.phone}</strong>.</p>
+          <input id="mz-otp" maxlength="6" inputmode="numeric" placeholder="6-digit code" class="w-full px-5 py-4 rounded-xl border text-center text-xl tracking-[0.5em] mb-4 focus:outline-none focus:ring-2" style="border-color:var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-lowest)" />
+          <p id="mz-otp-error" class="hidden text-xs mb-3" style="color:var(--md-sys-color-error)"></p>
+          <button id="mz-verify" class="w-full py-4 rounded-full text-sm font-medium transition-all hover:scale-[1.02] mb-3" style="background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)">Verify &amp; Open Gallery</button>
+          <button id="mz-back" class="w-full py-3 text-xs" style="color:var(--md-sys-color-outline)">Use a different number</button>
+        </div>`);
+    }
+
+    if (step === 'verifying') {
+      setM(`
+        <div class="text-center py-10">
+          <span class="material-symbols-outlined text-4xl mz-spin" style="color:var(--md-sys-color-secondary)">progress_activity</span>
+          <p class="text-sm mt-4" style="color:var(--md-sys-color-outline)">Verifying your code�</p>
+        </div>`);
+    }
+
+    if (step === 'gallery') {
+      const priv = data.privateImages || [];
+      const pub = data.publicImages || [];
+      setM(`
+        <div class="py-2">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="material-symbols-outlined" style="color:var(--md-sys-color-secondary)">workspace_premium</span>
+            <h3 class="text-xl" style="font-family:'Bodoni Moda',serif">Premium Gallery</h3>
+          </div>
+          ${priv.length ? `<p class="font-label-caps text-[11px] uppercase tracking-widest mb-3" style="color:var(--md-sys-color-outline)">Private � Selected for you</p>
+          <div class="grid grid-cols-2 gap-3 mb-6">${priv.map(img => `
+            <div class="relative rounded-xl overflow-hidden bg-surface-container" style="aspect-ratio:3/4">
+              <img src="${img.url}" class="w-full h-full object-cover" alt="${img.title || 'Premium design'}" />
+              <div class="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <span class="text-[10px] text-white">Available for ${img.duration_hours}h</span>
+              </div>
+            </div>`).join('')}</div>` : ''}
+          ${pub.length ? `<p class="font-label-caps text-[11px] uppercase tracking-widest mb-3" style="color:var(--md-sys-color-outline)">Public Collection</p>
+          <div class="grid grid-cols-2 gap-3">${pub.map(img => `
+            <div class="rounded-xl overflow-hidden bg-surface-container" style="aspect-ratio:3/4">
+              <img src="${img.url}" class="w-full h-full object-cover" alt="${img.title || 'Design'}" />
+            </div>`).join('')}</div>` : ''}
+          ${!priv.length && !pub.length ? `<p class="text-sm py-8 text-center" style="color:var(--md-sys-color-outline)">No images published yet. Please check back later.</p>` : ''}
+          <button id="mz-done" class="w-full mt-6 py-4 rounded-full text-sm font-medium border" style="border-color:var(--md-sys-color-outline)">Close</button>
+        </div>`);
+    }
+  }
+
+  function bindMembershipStep() {
+    document.getElementById('mz-submit')?.addEventListener('click', submitPhone);
+    document.getElementById('mz-phone')?.addEventListener('keydown', e => { if (e.key === 'Enter') submitPhone(); });
+    document.getElementById('mz-done')?.addEventListener('click', closeMembership);
+    document.getElementById('mz-back')?.addEventListener('click', () => renderMembershipStep('intro'));
+    document.getElementById('mz-verify')?.addEventListener('click', verifyOtp);
+    document.getElementById('mz-otp')?.addEventListener('keydown', e => { if (e.key === 'Enter') verifyOtp(); });
+  }
+
+  async function submitPhone() {
+    const input = document.getElementById('mz-phone');
+    const phone = (input?.value || '').trim();
+    if (phone.replace(/\D/g, '').length < 7) {
+      input.style.borderColor = 'var(--md-sys-color-error)';
+      return;
+    }
+    mPhone = phone;
+    renderMembershipStep('loading');
+    try {
+      const r = await fetch('/api/membership/request', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Request failed');
+      await new Promise(s => setTimeout(s, 900));
+      if (data.status === 'approved' && data.needsOtp) renderMembershipStep('otp', { phone });
+      else if (data.status === 'declined') renderMembershipStep('declined', data);
+      else renderMembershipStep('pending', { phone });
+    } catch (err) {
+      renderMembershipStep('intro');
+      setTimeout(() => alert(err.message), 100);
+    }
+  }
+
+  async function verifyOtp() {
+    const otp = (document.getElementById('mz-otp')?.value || '').trim();
+    const errEl = document.getElementById('mz-otp-error');
+    if (otp.length !== 6) { if (errEl) { errEl.textContent = 'Please enter the 6-digit code'; errEl.classList.remove('hidden'); } return; }
+    renderMembershipStep('verifying');
+    try {
+      const r = await fetch('/api/membership/verify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: mPhone, otp })
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Invalid code');
+      const imgs = await fetch(`/api/membership/images?phone=${encodeURIComponent(mPhone)}`);
+      const imgData = await imgs.json();
+      await new Promise(s => setTimeout(s, 500));
+      renderMembershipStep('gallery', imgData);
+    } catch (err) {
+      renderMembershipStep('otp', { phone: mPhone });
+      setTimeout(() => {
+        const e2 = document.getElementById('mz-otp-error');
+        if (e2) { e2.textContent = err.message; e2.classList.remove('hidden'); }
+      }, 50);
+    }
+  }
+
+  // ===== DYNAMIC CONTENT LOADER =====
+  fetch('/api/content').then(r => r.json()).then(({ content }) => {
+    if (!content) return;
+    const heroH1 = document.querySelector('#hero h1') || document.querySelector('h1');
+    if (content.hero?.headline?.value && heroH1) heroH1.innerHTML = content.hero.headline.value;
+    const heroP = document.querySelector('#hero p') || document.querySelector('main p');
+    if (content.hero?.subtitle?.value && heroP) heroP.textContent = content.hero.subtitle.value;
+    const engH2 = document.querySelector('#engagement-section h2');
+    if (content.engagement?.title?.value && engH2) engH2.textContent = content.engagement.title.value;
+    const engP = document.querySelector('#engagement-section p');
+    if (content.engagement?.subtitle?.value && engP) engP.textContent = content.engagement.subtitle.value;
+    const heroImg = document.querySelector('#hero img') || document.querySelector('main img');
+    if (content.hero?.image?.image && heroImg) heroImg.src = content.hero.image.image;
+  }).catch(() => {});
+
+  // ===== CONSULTATION BOOKING FORM =====
+  const cForm = document.getElementById('consultation-form');
+  cForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('consultation-submit');
+    const status = document.getElementById('consultation-status');
+    const fd = new FormData(cForm);
+    const payload = Object.fromEntries(fd.entries());
+
+    btn.disabled = true;
+    btn.textContent = 'Sending�';
+    status.classList.add('hidden');
+
+    try {
+      const r = await fetch('/api/bookings/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Submission failed');
+
+      status.textContent = '? Your consultation request has been submitted. The Zoskales Private Concierge will contact you shortly.';
+      status.style.background = 'var(--md-sys-color-secondary-container)';
+      status.style.color = 'var(--md-sys-color-on-secondary-container)';
+      status.classList.remove('hidden');
+      cForm.reset();
+    } catch (err) {
+      status.textContent = '? ' + err.message;
+      status.style.background = 'var(--md-sys-color-error-container)';
+      status.style.color = 'var(--md-sys-color-on-error-container)';
+      status.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Request';
+    }
+  });
+</script>
+</div></main><footer class="w-full bg-surface-container-lowest pt-section-padding pb-16 shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="max-w-container-max mx-auto px-edge-margin-mobile lg:px-edge-margin-desktop"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-20"><div class="flex flex-col space-y-4"><h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary pb-2">Jewellery</h4><ul class="space-y-3 font-body-md text-body-md text-on-surface-variant"><li class="hover:text-primary transition-colors"><a data-path="jewellery" href="#">Rings</a></li><li class="hover:text-primary transition-colors"><a data-path="jewellery" href="#">Necklaces</a></li><li class="hover:text-primary transition-colors"><a data-path="jewellery" href="#">Earrings</a></li><li class="hover:text-primary transition-colors"><a data-path="jewellery" href="#">Bracelets</a></li><li class="hover:text-primary transition-colors"><a data-path="jewellery" href="#">Men's</a></li></ul></div><div class="flex flex-col space-y-4"><h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary pb-2">Engagement</h4><ul class="space-y-3 font-body-md text-body-md text-on-surface-variant"><li class="hover:text-primary transition-colors"><a data-path="engagement" href="#">How to Select Your Diamond</a></li><li class="hover:text-primary transition-colors"><a data-path="engagement" href="#">The 4Cs</a></li><li class="hover:text-primary transition-colors"><a data-path="engagement" href="#">Diamond Shapes</a></li><li class="hover:text-primary transition-colors"><a data-path="engagement" href="#">Looking After Your Diamond</a></li><li class="hover:text-primary transition-colors"><a data-path="engagement" href="#">Engagement Rings</a></li></ul></div><div class="flex flex-col space-y-4"><h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary pb-2">Wedding</h4><ul class="space-y-3 font-body-md text-body-md text-on-surface-variant"><li class="hover:text-primary transition-colors"><a data-path="wedding" href="#">Wedding Bands</a></li><li class="hover:text-primary transition-colors"><a data-path="wedding" href="#">Men's Wedding Bands</a></li><li class="hover:text-primary transition-colors"><a data-path="wedding" href="#">Eternity Bands</a></li><li class="hover:text-primary transition-colors"><a data-path="wedding" href="#">Wedding Day Jewellery</a></li><li class="hover:text-primary transition-colors"><a data-path="wedding" href="#">Bridal Sets</a></li></ul></div><div class="flex flex-col space-y-4"><h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary pb-2">Maison &amp; Client Care</h4><ul class="space-y-3 font-body-md text-body-md text-on-surface-variant"><li class="hover:text-primary transition-colors"><a data-path="about" href="#">Ethical Sourcing</a></li><li class="hover:text-primary transition-colors"><a data-path="contact-us" href="#">Showroom</a></li><li class="hover:text-primary transition-colors"><a data-path="newsletter" href="#">Newsletter</a></li></ul></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-on-surface-variant text-label-caps font-label-caps uppercase"><p>� 2025 Zoskales Diamonds. All Rights Reserved.</p><div class="flex items-center gap-6"><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a><a class="hover:text-primary transition-colors" href="#">Terms of Service</a><a class="hover:text-primary transition-colors" href="#">Conflict-Free Certification</a></div></div></div></footer>
+<!-- TAWK.TO DISABLED: placeholder IDs cause 400 errors. Re-enable with real Property/Widget IDs: https://embed.tawk.to/PROPERTY/WIDGET -->
+</body></html>
