@@ -51,6 +51,9 @@ body { font-family: 'Hanken Grotesk', sans-serif; }
       <button data-page="content" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all hover:bg-surface-container">
         <span class="material-symbols-outlined text-xl">edit_note</span> Website Content
       </button>
+      <button data-page="vcard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all hover:bg-surface-container">
+        <span class="material-symbols-outlined text-xl">contact_page</span> Virtual Card
+      </button>
     </nav>
     <div class="p-4 border-t border-surface-container-high">
       <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-surface-container transition-all">
@@ -152,6 +155,7 @@ async function render() {
   if (currentPage === 'bookings') return renderBookings(c);
   if (currentPage === 'images') return renderImages(c);
   if (currentPage === 'content') return renderContent(c);
+  if (currentPage === 'vcard') return renderVcard(c);
 }
 
 async function renderDashboard(c) {
@@ -530,7 +534,12 @@ window.deleteImage = async function(id) {
 async function renderContent(c) {
   setTitle('Website Content', 'Dynamically update text and images on the website');
   c.innerHTML = '<div class="text-center py-12"><span class="material-symbols-outlined text-4xl spin">progress_activity</span></div>';
-  const { content } = await api('/content');
+  const { content: rows } = await api('/content');
+  const content = {};
+  (rows || []).forEach(r => {
+    content[r.section] = content[r.section] || {};
+    content[r.section][r.key] = { value: r.value, image: r.image_url || '' };
+  });
   const sections = Object.keys(content).length ? Object.keys(content) : ['hero', 'engagement'];
   const fields = [
     { section: 'hero', key: 'headline', label: 'Hero Headline' },
@@ -576,7 +585,184 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
+const VCARD_FIELDS = [
+  { key: 'name', label: 'Contact Person Name', ph: 'e.g. Selamawit Bekele', wide: true, required: true },
+  { key: 'role', label: 'Role in the Company', ph: 'e.g. Founder & Creative Director', wide: true },
+  { key: 'phone', label: 'Phone Number', ph: '+251 91 234 5678' },
+  { key: 'email', label: 'Personal Email', ph: 'name@example.com' },
+  { key: 'location', label: 'Location', ph: 'Addis Ababa, Ethiopia' },
+  { key: 'website', label: 'Website', ph: 'zoskalesdiamonds.com' },
+  { key: 'instagram', label: 'Instagram Link', ph: 'https://instagram.com/...' },
+  { key: 'tiktok', label: 'TikTok Link', ph: 'https://tiktok.com/@...' },
+  { key: 'facebook', label: 'Facebook Link', ph: 'https://facebook.com/...' },
+];
+
+function vcNormUrl(u) {
+  const s = String(u || '').trim();
+  if (!s) return '';
+  return /^https?:\/\//i.test(s) ? s : 'https://' + s;
+}
+
+function vcSocialUrl(key, u) {
+  let s = String(u || '').trim();
+  if (!s) return '';
+  if (s.startsWith('@')) s = key === 'tiktok' ? `tiktok.com/${s}` : s.slice(1);
+  if (!/^https?:\/\//i.test(s) && !s.includes('.')) s = `${key}.com/${s}`;
+  return vcNormUrl(s);
+}
+
+function readVcardForm() {
+  const d = {};
+  VCARD_FIELDS.forEach(f => { d[f.key] = document.getElementById('vc-' + f.key).value.trim(); });
+  return d;
+}
+
+function vcardPreviewHtml(d) {
+  const line = (icon, text, href) => !text ? '' : `
+    <div class="flex items-center gap-3 py-1.5 text-sm">
+      <span class="material-symbols-outlined text-base text-secondary">${icon}</span>
+      ${href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener" class="truncate hover:underline">${escapeHtml(text)}</a>` : `<span class="truncate">${escapeHtml(text)}</span>`}
+    </div>`;
+  const pill = (label, key, url) => !url ? '' : `<a href="${escapeHtml(vcSocialUrl(key, url))}" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-full border border-white/30 text-[11px] hover:bg-white/10 transition-colors">${label}</a>`;
+  return `
+    <div class="rounded-2xl bg-primary text-white p-6">
+      <div class="flex items-center justify-between">
+        <div class="serif text-lg">Zoskales</div>
+        <span class="material-symbols-outlined text-xl">diamond</span>
+      </div>
+      <div class="mt-6 serif text-2xl">${escapeHtml(d.name || 'Contact name')}</div>
+      <div class="text-[10px] uppercase tracking-[0.2em] text-white/60 mt-1">${escapeHtml(d.role || 'Role')}</div>
+      <div class="mt-1 text-[11px] text-white/50">Zoskales Diamonds</div>
+      <div class="mt-4 text-white/90">
+        ${line('call', d.phone, d.phone ? 'tel:' + d.phone.replace(/[^\d+]/g, '') : '')}
+        ${line('location_on', d.location)}
+        ${line('language', d.website, vcNormUrl(d.website))}
+        ${line('mail', d.email, d.email ? 'mailto:' + d.email : '')}
+      </div>
+      <div class="mt-4 pt-4 border-t border-white/15 flex flex-wrap gap-2">
+        ${pill('Instagram', 'instagram', d.instagram)}
+        ${pill('TikTok', 'tiktok', d.tiktok)}
+        ${pill('Facebook', 'facebook', d.facebook)}
+      </div>
+    </div>`;
+}
+
+async function vcMakeQr(text) {
+  if (window.QRCode) return window.QRCode.toDataURL(text, { margin: 1, width: 240 });
+  await new Promise((res) => document.addEventListener('qr-ready', res, { once: true }));
+  return window.QRCode.toDataURL(text, { margin: 1, width: 240 });
+}
+
+async function renderVcard(c) {
+  setTitle('Virtual Card', 'Create the scannable vCard that opens the contact-saving page');
+  document.getElementById('header-action').innerHTML = `
+    <a href="/vcard" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-primary text-primary text-sm hover:bg-primary hover:text-on-primary transition-all">
+      <span class="material-symbols-outlined text-lg">open_in_new</span> Open Public Card
+    </a>`;
+  c.innerHTML = '<div class="text-center py-12"><span class="material-symbols-outlined text-4xl spin">progress_activity</span></div>';
+  const { content: rows } = await api('/content');
+  const vals = {};
+  (rows || []).filter(r => r.section === 'vcard').forEach(r => { vals[r.key] = r.value || ''; });
+  const vcUrl = location.origin + '/api/vcard';
+
+  c.innerHTML = `
+    <div class="grid lg:grid-cols-2 gap-6 fade-up">
+      <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm">
+        <h3 class="serif text-xl">Card Details</h3>
+        <p class="text-sm text-on-surface-variant mt-1 mb-5">These fields become the vCard that phones open when the QR is scanned.</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          ${VCARD_FIELDS.map(f => `
+            <label class="block ${f.wide ? 'sm:col-span-2' : ''}">
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant">${f.label}${f.required ? ' *' : ''}</span>
+              <input id="vc-${f.key}" type="text" placeholder="${f.ph}" value="${escapeHtml(vals[f.key] || '')}" class="w-full mt-1.5 px-4 py-3 rounded-xl border border-outline-variant bg-white text-sm focus:outline-none focus:ring-2 focus:ring-secondary" />
+            </label>`).join('')}
+        </div>
+        <div class="mt-6 flex items-center gap-4">
+          <button id="vc-save" class="px-6 py-3 rounded-full bg-primary text-white text-sm uppercase tracking-widest disabled:opacity-60">Save Virtual Card</button>
+          <span id="vc-status" class="text-sm text-on-surface-variant"></span>
+        </div>
+      </div>
+      <div class="space-y-6">
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm">
+          <h3 class="serif text-xl mb-4">Preview</h3>
+          <div id="vc-preview"></div>
+        </div>
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm">
+          <h3 class="serif text-xl">QR Code</h3>
+          <p class="text-xs text-on-surface-variant mt-1 mb-4">Scanning opens the phone's default contact-saving page with these details.</p>
+          <div class="flex flex-wrap items-start gap-5">
+            <div class="p-3 bg-white rounded-xl border border-surface-container-high">
+              <img id="vc-qr" alt="vCard QR code" class="w-40 h-40 hidden" />
+              <div id="vc-qr-loading" class="w-40 h-40 flex items-center justify-center text-xs text-on-surface-variant">Generating…</div>
+            </div>
+            <div class="space-y-3 text-sm min-w-40">
+              <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Card link</div>
+              <div class="px-3 py-2 rounded-lg bg-surface-container text-xs break-all">${escapeHtml(vcUrl)}</div>
+              <button id="vc-copy" class="px-5 py-2.5 rounded-full border border-primary text-primary text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">Copy Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const refreshPreview = () => {
+    const el = document.getElementById('vc-preview');
+    if (el) el.innerHTML = vcardPreviewHtml(readVcardForm());
+  };
+  refreshPreview();
+  VCARD_FIELDS.forEach(f => document.getElementById('vc-' + f.key).addEventListener('input', refreshPreview));
+
+  vcMakeQr(vcUrl).then((dataUrl) => {
+    const qr = document.getElementById('vc-qr');
+    if (!qr) return;
+    qr.src = dataUrl;
+    qr.classList.remove('hidden');
+    document.getElementById('vc-qr-loading').classList.add('hidden');
+  }).catch(() => {
+    const l = document.getElementById('vc-qr-loading');
+    if (l) l.textContent = 'QR unavailable';
+  });
+
+  document.getElementById('vc-copy').onclick = () => {
+    navigator.clipboard?.writeText(vcUrl);
+    const b = document.getElementById('vc-copy');
+    b.textContent = 'Copied ✓';
+    setTimeout(() => { b.textContent = 'Copy Link'; }, 1500);
+  };
+
+  document.getElementById('vc-save').onclick = async () => {
+    const btn = document.getElementById('vc-save');
+    const status = document.getElementById('vc-status');
+    const data = readVcardForm();
+    if (!data.name) {
+      status.className = 'text-sm text-red-600';
+      status.textContent = 'Contact person name is required.';
+      return;
+    }
+    btn.disabled = true;
+    status.className = 'text-sm text-on-surface-variant';
+    status.textContent = 'Saving…';
+    try {
+      for (const f of VCARD_FIELDS) {
+        await api('/content', { method: 'PUT', body: { section: 'vcard', key: f.key, value: data[f.key] } });
+      }
+      status.className = 'text-sm text-green-600';
+      status.textContent = 'Saved ✓';
+      refreshPreview();
+    } catch (err) {
+      status.className = 'text-sm text-red-600';
+      status.textContent = 'Save failed: ' + err.message;
+    }
+    btn.disabled = false;
+  };
+}
+
 render();
+</script>
+<script type="module">
+  import QRCode from 'qrcode';
+  window.QRCode = QRCode;
+  document.dispatchEvent(new Event('qr-ready'));
 </script>
 </body>
 </html>

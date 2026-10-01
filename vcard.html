@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zoskales Diamonds — Virtual Contact Card</title>
+<meta name="description" content="Scan or open this card to save Zoskales Diamonds contact details to your phone."/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 5 L90 38 L50 95 L10 38 Z' fill='%23775a19'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link rel="stylesheet" href="/src/css/main.css"/>
+<style>
+body { font-family: 'Hanken Grotesk', sans-serif; }
+.serif { font-family: 'Bodoni Moda', serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+</style>
+</head>
+<body class="bg-surface min-h-screen">
+  <div class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-7">
+        <div class="serif text-3xl text-primary">Zoskales Diamonds</div>
+        <div class="text-[10px] uppercase tracking-[0.3em] text-secondary mt-2">Virtual Contact Card</div>
+      </div>
+
+      <div id="vcard" class="rounded-3xl bg-surface-container-lowest shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-surface-container-high p-7">
+        <div class="text-center py-8 text-sm text-on-surface-variant">Loading card…</div>
+      </div>
+
+      <div class="mt-7 text-center">
+        <a href="/api/vcard" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary text-white text-sm uppercase tracking-widest hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-lg">person_add</span>
+          Add to Contacts
+        </a>
+        <p class="text-[11px] text-on-surface-variant mt-3">iPhone opens its contact-saving page &middot; Android downloads the contact</p>
+      </div>
+
+      <div class="mt-6 p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high flex items-center gap-4">
+        <div class="p-2 bg-white rounded-xl border border-surface-container-high shrink-0">
+          <img id="vcard-qr" alt="Scan to save contact" class="w-28 h-28 hidden" />
+          <div id="vcard-qr-loading" class="w-28 h-28 flex items-center justify-center text-[10px] text-on-surface-variant">QR…</div>
+        </div>
+        <div class="text-left">
+          <div class="text-[10px] uppercase tracking-[0.2em] text-secondary mb-1">Scan to save</div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">Point your phone camera at this code — it opens the default contact-saving page with all details filled in.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import QRCode from 'qrcode';
+
+    (async () => {
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    const normUrl = (u) => { const s = String(u || '').trim(); return !s ? '' : (/^https?:\/\//i.test(s) ? s : 'https://' + s); };
+    const socialUrl = (key, u) => {
+      let s = String(u || '').trim();
+      if (!s) return '';
+      if (s.startsWith('@')) s = key === 'tiktok' ? `tiktok.com/${s}` : s.slice(1);
+      if (!/^https?:\/\//i.test(s) && !s.includes('.')) s = `${key}.com/${s}`;
+      return normUrl(s);
+    };
+
+    let v = () => '';
+    try {
+      const r = await fetch('/api/content');
+      const j = await r.json();
+      const sec = (j.content && j.content.vcard) || {};
+      v = (k) => String((sec[k] && sec[k].value) || '').trim();
+    } catch (e) { /* keep empty defaults */ }
+
+    const name = v('name');
+    const rows = [];
+    const phone = v('phone');
+    const location_ = v('location');
+    const website = v('website');
+    const email = v('email');
+
+    if (phone) rows.push(`<a href="tel:${esc(phone.replace(/[^\d+]/g, ''))}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-secondary">call</span><span>${esc(phone)}</span></a>`);
+    if (location_) rows.push(`<div class="flex items-center gap-3 px-4 py-3 text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-secondary">location_on</span><span>${esc(location_)}</span></div>`);
+    if (website) rows.push(`<a href="${esc(normUrl(website))}" target="_blank" rel="noopener" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-secondary">language</span><span>${esc(website)}</span></a>`);
+    if (email) rows.push(`<a href="mailto:${esc(email)}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-container transition-colors text-sm text-on-surface"><span class="material-symbols-outlined text-lg text-secondary">mail</span><span>${esc(email)}</span></a>`);
+
+    const socials = [
+      ['instagram', 'Instagram', 'photo_camera'],
+      ['tiktok', 'TikTok', 'music_note'],
+      ['facebook', 'facebook', 'thumb_up'],
+    ].filter(([k]) => v(k));
+    const initials = name ? name.trim().charAt(0).toUpperCase() : 'Z';
+
+    $('vcard').innerHTML = `
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-primary text-white flex items-center justify-center serif text-2xl">${esc(initials)}</div>
+        <div class="serif text-2xl text-primary mt-4">${esc(name || 'Zoskales Diamonds')}</div>
+        ${v('role') ? `<div class="text-[11px] uppercase tracking-[0.2em] text-secondary mt-1">${esc(v('role'))}</div>` : ''}
+        <div class="text-xs text-on-surface-variant mt-2">Zoskales Diamonds</div>
+      </div>
+      <div class="mt-6 space-y-1">${rows.join('') || '<div class="text-center text-sm text-on-surface-variant py-4">Contact details not configured yet.</div>'}</div>
+      ${socials.length ? `<div class="mt-5 pt-5 border-t border-surface-container-high flex flex-wrap justify-center gap-2">${socials.map(([k, label, icon]) => `<a href="${esc(socialUrl(k, v(k)))}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-surface-container-high text-xs hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm text-secondary">${icon}</span>${label}</a>`).join('')}</div>` : ''}
+    `;
+
+    try {
+      const dataUrl = await QRCode.toDataURL(location.origin + '/api/vcard', { margin: 1, width: 224 });
+      const qr = $('vcard-qr');
+      qr.src = dataUrl;
+      qr.classList.remove('hidden');
+      $('vcard-qr-loading').classList.add('hidden');
+    } catch (e) {
+      $('vcard-qr-loading').textContent = 'QR unavailable';
+    }
+    })();
+  </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import health from '../api/health.js';
 import content from '../api/content.js';
+import vcard from '../api/vcard.js';
 import collection from '../api/collection.js';
 import membershipRequest from '../api/membership/request.js';
 import membershipVerify from '../api/membership/verify.js';
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 
 app.all('/health', health);
 app.all('/api/content', content);
+app.all('/api/vcard', vcard);
 app.all('/api/collection', collection);
 app.all('/api/membership/request', membershipRequest);
 app.all('/api/membership/verify', membershipVerify);
