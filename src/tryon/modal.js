@@ -156,7 +156,7 @@ export class TryOnModal {
     const body = items.length
       ? `<div class="grid grid-cols-2 gap-3" style="max-height:55vh;overflow-y:auto;padding-right:4px">
           ${items.map((im, i) => `
-            <button class="tryon-collection-item group relative rounded-xl overflow-hidden border text-left" data-url="${this.esc(im.url)}" data-title="${this.esc(im.title || '')}" style="aspect-ratio:1/1;border-color:${this.selectedJewelry?.url === im.url ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline)'}">
+            <button class="tryon-collection-item group relative rounded-xl overflow-hidden border text-left" data-url="${this.esc(im.url)}" data-title="${this.esc(im.title || '')}" data-category="${this.esc(im.category || '')}" style="aspect-ratio:1/1;border-color:${this.selectedJewelry?.url === im.url ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline)'}">
               <img src="${this.esc(im.url)}" alt="${this.esc(im.title || 'Collection piece')}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent text-white text-[10px] uppercase tracking-widest p-2 truncate">${this.esc(im.title || 'Piece ' + (i + 1))}</span>
             </button>`).join('')}
@@ -265,7 +265,7 @@ export class TryOnModal {
       });
       this.el.querySelectorAll('.tryon-collection-item').forEach((btn) => {
         btn.addEventListener('click', () => {
-          this.selectedJewelry = { url: btn.dataset.url, title: btn.dataset.title || '' };
+          this.selectedJewelry = { url: btn.dataset.url, title: btn.dataset.title || '', category: btn.dataset.category || '' };
           this.currentStep = 'preview';
           this.render();
         });
@@ -389,6 +389,16 @@ export class TryOnModal {
     }
   }
 
+  tryOnCat(cat) {
+    const map = {
+      engagement: 'ring', wedding: 'ring', rings: 'ring',
+      necklaces: 'necklace', beads: 'necklace',
+      earrings: 'earring',
+      bracelets: 'bracelet', mens: 'bracelet',
+    };
+    return map[cat] || '';
+  }
+
   async process() {
     this.currentStep = 'processing';
     this.render();
@@ -411,14 +421,19 @@ export class TryOnModal {
         }
       }
 
+      const productCat = this.product.tryOnCategory || 'ring';
+      const selCat = this.tryOnCat(this.selectedJewelry?.category);
+      const category = selCat || productCat;
+      const mismatch = Boolean(selCat && selCat !== productCat);
+
       const resp = await fetch('/api/tryon/finish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           image: base64,
-          category: this.product.tryOnCategory || 'ring',
-          jewelryName: this.product.name,
-          jewelryDesc: this.product.desc || this.product.tagline,
+          category,
+          jewelryName: mismatch ? (jewelryTitle || this.product.name) : this.product.name,
+          jewelryDesc: mismatch ? '' : (this.product.desc || this.product.tagline),
           jewelryImage,
           jewelryMimeType,
           jewelryTitle,

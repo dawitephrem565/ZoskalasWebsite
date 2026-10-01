@@ -15,5 +15,18 @@ export default H(async (req, res) => {
     console.error('[collection] select error:', error.message);
     return fail(res, 500, 'Database error');
   }
-  return ok(res, { images: data || [] });
+
+  let catMap = {};
+  try {
+    const { data: catRows } = await supabase
+      .from('zoscales_content')
+      .select('key, value')
+      .eq('section', 'image_cat');
+    for (const r of catRows || []) catMap[String(r.key)] = r.value || '';
+  } catch (e) {
+    console.error('[collection] category lookup error:', e.message);
+  }
+
+  const images = (data || []).map((im) => ({ ...im, category: catMap[String(im.id)] || '' }));
+  return ok(res, { images });
 });
