@@ -4,8 +4,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/admin/(.*)", "destination": "/api/admin" }
+  ],
   "functions": {
     "api/tryon/finish.js": { "maxDuration": 60 },
-    "api/admin/images/index.js": { "maxDuration": 30 }
+    "api/admin.js": { "maxDuration": 30 }
   }
 }

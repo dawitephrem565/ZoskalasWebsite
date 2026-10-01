@@ -10,17 +10,23 @@ const CATEGORY_INSTRUCTIONS = {
   bracelet: (n) => `Place the ${n} bracelet on the user's wrist. The bracelet should wrap naturally around the wrist. Add realistic metallic reflections matching the lighting. Do not alter the user's face, body, or clothing.`,
 };
 
-function buildPrompt(category, name, desc, skinHint) {
-  const base = `You are a professional jewelry try-on AI. The user has uploaded a photo. `;
+function buildPrompt(category, name, desc, skinHint, hasJewelryRef, jewelryTitle) {
+  const placement = CATEGORY_INSTRUCTIONS[category]?.(name) || CATEGORY_INSTRUCTIONS.ring(name);
   const descNote = desc ? ` Jewelry description: ${desc}.` : '';
   const skinNote = skinHint ? ` The user's skin tone is ${skinHint}.` : '';
-  return `${base}${CATEGORY_INSTRUCTIONS[category]?.(name) || CATEGORY_INSTRUCTIONS.ring(name)}${descNote}${skinNote}
+  const source = hasJewelryRef
+    ? `Image 1 is the person's photo. Image 2 is the exact jewelry piece to apply${jewelryTitle ? ` ("${jewelryTitle}")` : ''} — reproduce its design, stones, metal color and fine details faithfully.`
+    : `The user has uploaded a photo and the jewelry is described below.`;
+  return `You are a professional jewelry try-on AI.
+${source}
+${placement}${descNote}${skinNote}
 
 Rules:
 - Generate ONLY the modified image, no text response
-- The jewelry must look photorealistic and naturally placed
-- Preserve the original image quality, lighting, and composition
-- Do not add any text, watermarks, or borders`;
+- The jewelry must look photorealistic, naturally worn, correctly scaled and positioned for the person
+- Preserve the person's face, body, skin tone, clothing, background, lighting and image composition exactly
+- Add only the jewelry — change nothing else in the photo
+- No text, watermarks, or borders`;
 }
 
 export default H(async (req, res) => {
@@ -33,8 +39,12 @@ export default H(async (req, res) => {
   const jewelryName = String(body.jewelryName || '');
   const jewelryDesc = String(body.jewelryDesc || '');
   const skinHint = String(body.skinHint || '');
+  const jewelryImage = String(body.jewelryImage || '');
+  const jewelryMimeType = String(body.jewelryMimeType || 'image/jpeg');
+  const jewelryTitle = String(body.jewelryTitle || '');
 
   if (!image || image.length > 4_000_000) return fail(res, 400, 'Invalid or too large image');
+  if (jewelryImage && jewelryImage.length > 1_500_000) return fail(res, 400, 'Jewelry reference image too large');
   if (!['ring', 'necklace', 'earring', 'bracelet'].includes(category)) {
     return fail(res, 400, 'Invalid category');
   }
@@ -42,23 +52,30 @@ export default H(async (req, res) => {
   if (!process.env.GEMINI_API_KEY) return fail(res, 500, 'GEMINI_API_KEY not configured');
 
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const prompt = buildPrompt(category, jewelryName, jewelryDesc, skinHint);
+  const prompt = buildPrompt(category, jewelryName, jewelryDesc, skinHint, !!jewelryImage, jewelryTitle);
   const model = process.env.GEMINI_MODEL || 'gemini-3.1-flash-image';
 
-  console.log('[tryon] Gemini call, image chars:', image.length, 'model:', model);
+  const userParts = [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data: image } }];
+  if (jewelryImage) {
+    userParts.push({ inlineData: { mimeType: jewelryMimeType, data: jewelryImage } });
+  }
+
+  console.log('[tryon] Gemini call, image chars:', image.length, 'jewelry ref:', jewelryImage.length, 'model:', model);
+
+  const callModel = () => ai.models.generateContent({
+    model,
+    contents: [{ role: 'user', parts: userParts }],
+    config: { responseModalities: ['IMAGE'], temperature: 0.4 },
+  });
 
   let response;
   try {
-    response = await ai.models.generateContent({
-      model,
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data: image } }],
-        },
-      ],
-      config: { responseModalities: ['IMAGE'], temperature: 0.4 },
-    });
+    response = await callModel();
+    const hasImage = (r) => (r.candidates?.[0]?.content?.parts || []).some((p) => p.inlineData?.data);
+    for (let attempt = 0; attempt < 2 && !hasImage(response); attempt++) {
+      console.log('[tryon] no image in response, retry', attempt + 1);
+      response = await callModel();
+    }
   } catch (apiErr) {
     console.error('[tryon] Gemini API error:', apiErr.message);
     const msg = String(apiErr.message || '');

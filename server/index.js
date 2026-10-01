@@ -5,18 +5,19 @@ import cors from 'cors';
 
 import health from '../api/health.js';
 import content from '../api/content.js';
+import collection from '../api/collection.js';
 import membershipRequest from '../api/membership/request.js';
 import membershipVerify from '../api/membership/verify.js';
 import membershipImages from '../api/membership/images.js';
 import bookingsCreate from '../api/bookings/create.js';
-import adminBookings from '../api/admin/bookings.js';
-import adminStats from '../api/admin/stats.js';
-import adminContent from '../api/admin/content.js';
-import adminImages from '../api/admin/images/index.js';
-import adminImageId from '../api/admin/images/[id].js';
-import adminRequests from '../api/admin/requests/index.js';
-import adminAccept from '../api/admin/requests/[id]/accept.js';
-import adminDecline from '../api/admin/requests/[id]/decline.js';
+import adminBookings from '../lib/admin/bookings.js';
+import adminStats from '../lib/admin/stats.js';
+import adminContent from '../lib/admin/content.js';
+import adminImages from '../lib/admin/images/index.js';
+import adminImageId from '../lib/admin/images/[id].js';
+import adminRequests from '../lib/admin/requests/index.js';
+import adminAccept from '../lib/admin/requests/[id]/accept.js';
+import adminDecline from '../lib/admin/requests/[id]/decline.js';
 import tryOnFinish from '../api/tryon/finish.js';
 
 const app = express();
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 app.all('/health', health);
 app.all('/api/content', content);
+app.all('/api/collection', collection);
 app.all('/api/membership/request', membershipRequest);
 app.all('/api/membership/verify', membershipVerify);
 app.all('/api/membership/images', membershipImages);

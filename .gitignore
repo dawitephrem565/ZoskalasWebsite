@@ -6,3 +6,6 @@ dist/
 *.db
 server/.env
 server/node_modules/
+
+.vercel
+.env*.local
