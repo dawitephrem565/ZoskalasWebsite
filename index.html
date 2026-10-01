@@ -993,25 +993,94 @@
     document.getElementById('gallery-title').textContent = cat.name;
     document.getElementById('gallery-meta').textContent = `${cat.count} creations in this gallery`;
     document.getElementById('gallery-grid').innerHTML = cat.images.map((src, i) => `
-      <figure class="group relative overflow-hidden bg-surface-container aspect-square">
-        <img src="${src}" alt="${cat.name} â€” creation ${i + 1}" loading="lazy" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"/>
+      <figure class="gal-item group relative overflow-hidden bg-surface-container aspect-square">
+        <img src="${src}" alt="${cat.name} â€” creation ${i + 1}" loading="lazy" draggable="false" class="gal-img w-full h-full object-cover object-center select-none"/>
+        <div class="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/70 text-white text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <span class="material-symbols-outlined text-xs">zoom_in</span>
+          <span class="gal-zoom-pct">250%</span>
+          <span class="hidden sm:inline">&middot; scroll</span>
+        </div>
         <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white font-label-caps text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           ${cat.name} Â· No. ${String(i + 1).padStart(2, '0')}
         </figcaption>
       </figure>`).join('');
+    hideGalZoom();
     gallerySection.classList.remove('hidden');
     requestAnimationFrame(() => gallerySection.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+
+  let activeCatCard = null;
+  let galItem = null;
+  let galLevel = 2.5;
+  const galZoomEnabled = window.matchMedia('(hover: hover)').matches;
+
+  function setGalZoom(fig, level, pctX, pctY) {
+    const img = fig.querySelector('.gal-img');
+    const pct = fig.querySelector('.gal-zoom-pct');
+    if (!img) return;
+    galLevel = level;
+    img.style.transform = `scale(${level})`;
+    if (pctX !== undefined) img.style.transformOrigin = `${pctX}% ${pctY}%`;
+    if (pct) pct.textContent = `${Math.round(level * 100)}%`;
+  }
+
+  function hideGalZoom() {
+    if (!galItem) return;
+    const img = galItem.querySelector('.gal-img');
+    if (img) { img.style.transform = ''; img.style.transformOrigin = ''; }
+    const pct = galItem.querySelector('.gal-zoom-pct');
+    if (pct) pct.textContent = '250%';
+    galItem = null;
+  }
+
+  if (galZoomEnabled) {
+    const galleryGrid = document.getElementById('gallery-grid');
+
+    galleryGrid.addEventListener('mouseover', (e) => {
+      const fig = e.target.closest('.gal-item');
+      if (!fig || fig === galItem) return;
+      hideGalZoom();
+      galItem = fig;
+      setGalZoom(fig, 2.5, 50, 50);
+    });
+
+    galleryGrid.addEventListener('mousemove', (e) => {
+      if (!galItem) return;
+      const fig = e.target.closest('.gal-item');
+      if (fig !== galItem) { hideGalZoom(); return; }
+      const r = galItem.getBoundingClientRect();
+      const x = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+      const y = Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100));
+      setGalZoom(galItem, galLevel, x, y);
+    });
+
+    galleryGrid.addEventListener('mouseout', (e) => {
+      if (!e.relatedTarget || !galleryGrid.contains(e.relatedTarget)) hideGalZoom();
+    });
+
+    galleryGrid.addEventListener('wheel', (e) => {
+      if (!galItem) return;
+      if (!e.target.closest('.gal-item')) return;
+      e.preventDefault();
+      setGalZoom(galItem, Math.min(6, Math.max(1.5, galLevel + (e.deltaY < 0 ? 0.25 : -0.25))));
+    }, { passive: false });
   }
 
   exploreGrid.addEventListener('click', (e) => {
     const card = e.target.closest('.cat-card');
     if (!card) return;
     const cat = ZCATEGORIES.find((c) => c.id === card.dataset.cat);
-    if (cat) openCategory(cat);
+    if (!cat) return;
+    if (activeCatCard) activeCatCard.classList.remove('ring-2', 'ring-secondary');
+    card.classList.add('ring-2', 'ring-secondary');
+    activeCatCard = card;
+    openCategory(cat);
   });
 
   document.getElementById('back-to-explore').addEventListener('click', () => {
     gallerySection.classList.add('hidden');
+    hideGalZoom();
+    if (activeCatCard) { activeCatCard.classList.remove('ring-2', 'ring-secondary'); activeCatCard = null; }
     exploreSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 </script>

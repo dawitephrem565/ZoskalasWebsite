@@ -343,43 +343,183 @@ async function renderImages(c) {
   setTitle('Images', 'Upload and manage public / private gallery images');
   document.getElementById('header-action').innerHTML = `
     <label class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-primary text-white text-sm cursor-pointer">
-      <span class="material-symbols-outlined text-lg">upload</span> Upload Image
-      <input type="file" id="img-file" accept="image/*" class="hidden" />
+      <span class="material-symbols-outlined text-lg">upload</span> Upload Images
+      <input type="file" id="img-file" accept="image/*" multiple class="hidden" />
     </label>`;
-  c.innerHTML = '<div class="text-center py-12"><span class="material-symbols-outlined text-4xl spin">progress_activity</span></div>';
+  c.innerHTML = `
+    <div id="upload-progress" class="hidden mb-6 p-4 rounded-2xl bg-surface-container-lowest shadow-sm">
+      <div class="flex items-center justify-between mb-2">
+        <div id="up-status" class="text-sm font-medium">Uploading…</div>
+        <div id="up-detail" class="text-xs text-on-surface-variant"></div>
+      </div>
+      <div class="h-2 rounded-full bg-surface-container overflow-hidden">
+        <div id="up-bar" class="h-full bg-primary transition-all duration-300" style="width:0%"></div>
+      </div>
+      <div id="up-files" class="mt-3 space-y-1 max-h-44 overflow-y-auto text-xs"></div>
+    </div>
+    <div id="images-area"></div>`;
   const { images } = await api('/images');
   adminImages = images;
+  renderImagesArea();
 
   document.getElementById('img-file').onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const selected = Array.from(e.target.files || []);
     e.target.value = '';
-    const title = prompt('Image title:', file.name) || file.name;
-    const visibility = prompt('Visibility — type "private" or "public":', 'private') === 'private' ? 'private' : 'public';
-    try {
-      const fileBase64 = await compressToBase64(file, 1600, 0.85);
-      await api('/images', { method: 'POST', body: { title, visibility, fileBase64 } });
-      render();
-    } catch (err) { alert('Upload failed: ' + err.message); }
+    if (!selected.length) return;
+    if (bulkUploadBusy) return;
+    let note = '';
+    let files = selected;
+    if (selected.length > 50) {
+      files = selected.slice(0, 50);
+      note = `Limit is 50 images per upload — sending the first 50 (you selected ${selected.length}).`;
+    }
+    await bulkUpload(files, note);
   };
+}
 
-  if (!images.length) {
-    c.innerHTML += '<div class="text-center py-12 text-on-surface-variant">No images yet. Click "Upload Image" to add your first.</div>';
+function renderImagesArea() {
+  const el = document.getElementById('images-area');
+  if (!el) return;
+  if (!adminImages.length) {
+    el.innerHTML = '<div class="text-center py-12 text-on-surface-variant">No images yet. Click "Upload Images" to add your first.</div>';
     return;
   }
+  el.innerHTML = `<div id="images-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 fade-up">${adminImages.map(imageCardHtml).join('')}</div>`;
+}
 
-  c.innerHTML += `<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 fade-up">${images.map(img => `
-    <div class="relative group rounded-xl overflow-hidden bg-surface-container-lowest shadow-sm" style="aspect-ratio:1">
+function imageCardHtml(img) {
+  return `
+    <div id="img-card-${img.id}" class="relative group rounded-xl overflow-hidden bg-surface-container-lowest shadow-sm" style="aspect-ratio:1">
       <img src="${img.url}" class="w-full h-full object-cover" alt="" />
-      <span class="absolute top-2 left-2 text-[9px] px-2 py-0.5 rounded-full ${img.visibility==='private'?'bg-black/80 text-white':'bg-white/95 text-black'}">${img.visibility}</span>
-      <button onclick="deleteImage(${img.id})" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 rounded-full bg-white/90 flex items-center justify-center shadow">
+      <span id="img-vis-${img.id}" class="absolute top-2 left-2 text-[9px] px-2 py-0.5 rounded-full ${img.visibility === 'private' ? 'bg-black/80 text-white' : 'bg-white/95 text-black'}">${img.visibility}</span>
+      <button onclick="editImage(${img.id})" title="Edit visibility" class="absolute top-2 right-9 opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 rounded-full bg-white/90 flex items-center justify-center shadow">
+        <span class="material-symbols-outlined text-sm">edit</span>
+      </button>
+      <button onclick="deleteImage(${img.id})" title="Delete" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 rounded-full bg-white/90 flex items-center justify-center shadow">
         <span class="material-symbols-outlined text-sm">delete</span>
       </button>
       <div class="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
         <div class="text-[10px] text-white truncate">${escapeHtml(img.title || '')}</div>
       </div>
-    </div>`).join('')}</div>`;
+    </div>`;
 }
+
+let bulkUploadBusy = false;
+
+async function bulkUpload(files, note) {
+  bulkUploadBusy = true;
+  const panel = document.getElementById('upload-progress');
+  const bar = document.getElementById('up-bar');
+  const status = document.getElementById('up-status');
+  const detail = document.getElementById('up-detail');
+  const list = document.getElementById('up-files');
+  panel.classList.remove('hidden');
+  bar.style.width = '0%';
+  status.textContent = `Uploading 1 of ${files.length}…`;
+  detail.className = 'text-xs text-on-surface-variant';
+  detail.textContent = note || '';
+  list.innerHTML = '';
+  const rowIds = files.map((f, i) => {
+    const rowId = `upf-${i}`;
+    list.insertAdjacentHTML('beforeend',
+      `<div id="${rowId}" class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-on-surface-variant">radio_button_unchecked</span><span class="flex-1 truncate">${escapeHtml(f.name)}</span><span class="text-on-surface-variant">waiting</span></div>`);
+    return rowId;
+  });
+  let saved = 0, failed = 0;
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    const row = document.getElementById(rowIds[i]);
+    status.textContent = `Uploading ${i + 1} of ${files.length}…`;
+    row.innerHTML = `<span class="material-symbols-outlined text-sm text-primary spin">progress_activity</span><span class="flex-1 truncate">${escapeHtml(f.name)}</span><span class="text-on-surface-variant">uploading…</span>`;
+    try {
+      const fileBase64 = await compressToBase64(f, 1600, 0.85);
+      const res = await api('/images', { method: 'POST', body: { title: f.name, visibility: 'private', fileBase64 } });
+      saved++;
+      const img = { id: res.id, title: res.title || f.name, url: res.url, visibility: res.visibility || 'private' };
+      adminImages.unshift(img);
+      const grid = document.getElementById('images-grid');
+      if (grid) grid.insertAdjacentHTML('afterbegin', imageCardHtml(img));
+      else renderImagesArea();
+      row.innerHTML = `<span class="material-symbols-outlined text-sm text-green-600">check_circle</span><span class="flex-1 truncate">${escapeHtml(f.name)}</span><span class="text-green-600">saved</span>`;
+    } catch (err) {
+      failed++;
+      row.innerHTML = `<span class="material-symbols-outlined text-sm text-red-600">error</span><span class="flex-1 truncate">${escapeHtml(f.name)}</span><span class="text-red-600">failed</span>`;
+      detail.className = 'text-xs text-red-600';
+      detail.textContent = `${f.name}: ${err.message}`;
+    }
+    bar.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+  }
+  status.textContent = failed
+    ? `Done — ${saved} saved, ${failed} failed`
+    : `Done — ${saved} image${saved === 1 ? '' : 's'} uploaded (private)`;
+  bulkUploadBusy = false;
+  if (!failed) setTimeout(() => { if (!bulkUploadBusy) panel.classList.add('hidden'); }, 4000);
+}
+
+window.editImage = function(id) {
+  const img = adminImages.find(x => x.id === id);
+  if (!img) return;
+  closeEditImage();
+  const wrap = document.createElement('div');
+  wrap.id = 'img-edit-overlay';
+  wrap.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4';
+  wrap.innerHTML = `
+    <div class="w-full max-w-sm rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-base font-medium">Edit image</h3>
+        <button onclick="closeEditImage()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+      <div class="text-xs text-on-surface-variant truncate mb-4">${escapeHtml(img.title || '')}</div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Visibility</div>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="vis-opt-private" onclick="setImageVisibility(${id}, 'private')" class="py-3 rounded-xl text-sm font-medium border">Private</button>
+        <button id="vis-opt-public" onclick="setImageVisibility(${id}, 'public')" class="py-3 rounded-xl text-sm font-medium border">Public</button>
+      </div>
+      <div id="vis-edit-status" class="text-xs mt-3 text-on-surface-variant"></div>
+    </div>`;
+  document.body.appendChild(wrap);
+  updateVisOptions(img.visibility);
+};
+
+function updateVisOptions(vis) {
+  const p = document.getElementById('vis-opt-private');
+  const q = document.getElementById('vis-opt-public');
+  if (!p || !q) return;
+  p.className = vis === 'private'
+    ? 'py-3 rounded-xl text-sm font-medium border bg-primary text-white border-primary'
+    : 'py-3 rounded-xl text-sm font-medium border bg-surface-container border-transparent text-on-surface';
+  q.className = vis === 'public'
+    ? 'py-3 rounded-xl text-sm font-medium border bg-primary text-white border-primary'
+    : 'py-3 rounded-xl text-sm font-medium border bg-surface-container border-transparent text-on-surface';
+}
+
+window.closeEditImage = function() {
+  document.getElementById('img-edit-overlay')?.remove();
+};
+
+window.setImageVisibility = async function(id, vis) {
+  const status = document.getElementById('vis-edit-status');
+  status.className = 'text-xs mt-3 text-on-surface-variant';
+  status.textContent = 'Saving…';
+  try {
+    await api(`/images/${id}`, { method: 'PATCH', body: { visibility: vis } });
+    const img = adminImages.find(x => x.id === id);
+    if (img) img.visibility = vis;
+    updateVisOptions(vis);
+    const badge = document.getElementById(`img-vis-${id}`);
+    if (badge) {
+      badge.textContent = vis;
+      badge.className = `absolute top-2 left-2 text-[9px] px-2 py-0.5 rounded-full ${vis === 'private' ? 'bg-black/80 text-white' : 'bg-white/95 text-black'}`;
+    }
+    status.textContent = 'Saved.';
+    setTimeout(closeEditImage, 700);
+  } catch (err) {
+    status.className = 'text-xs mt-3 text-red-600';
+    status.textContent = 'Update failed: ' + err.message;
+  }
+};
 
 window.deleteImage = async function(id) {
   if (!confirm('Delete this image?')) return;
