@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Zoskales Admin</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 5 L90 38 L50 95 L10 38 Z' fill='%23775a19'/></svg>">
+<link rel="icon" href="/favicon.png" type="image/png"/><link rel="apple-touch-icon" href="/favicon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link rel="stylesheet" href="/src/css/main.css"/>
@@ -26,7 +26,7 @@ body { font-family: 'Hanken Grotesk', sans-serif; }
   <aside class="w-64 bg-surface-container-lowest border-r border-surface-container-high flex flex-col fixed inset-y-0">
     <div class="p-6 border-b border-surface-container-high">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-primary text-white flex items-center justify-center font-bold text-lg">Z</div>
+        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden shrink-0 border border-surface-container-high"><img src="/logo-mark.png" alt="Zoskales Diamonds" class="w-8 h-8 object-contain" /></div>
         <div>
           <div class="serif text-lg leading-none">Zoskales</div>
           <div class="text-[10px] uppercase tracking-[0.2em] text-secondary">Admin Panel</div>
@@ -768,17 +768,27 @@ async function renderVcard(c) {
     if (el) el.innerHTML = vcardPreviewHtml(readVcardForm());
   };
   refreshPreview();
-  VCARD_FIELDS.forEach(f => document.getElementById('vc-' + f.key).addEventListener('input', refreshPreview));
 
-  vcMakeQr(vcUrl).then((dataUrl) => {
-    const qr = document.getElementById('vc-qr');
-    if (!qr) return;
-    qr.src = dataUrl;
-    qr.classList.remove('hidden');
-    document.getElementById('vc-qr-loading').classList.add('hidden');
-  }).catch(() => {
-    const l = document.getElementById('vc-qr-loading');
-    if (l) l.textContent = 'QR unavailable';
+  const refreshQr = async () => {
+    if (!window.buildVcardText) {
+      await new Promise((res) => document.addEventListener('qr-ready', res, { once: true }));
+    }
+    const text = window.buildVcardText(readVcardForm());
+    try {
+      const dataUrl = await vcMakeQr(text);
+      const qr = document.getElementById('vc-qr');
+      if (!qr) return;
+      qr.src = dataUrl;
+      qr.classList.remove('hidden');
+      document.getElementById('vc-qr-loading').classList.add('hidden');
+    } catch {
+      const l = document.getElementById('vc-qr-loading');
+      if (l) l.textContent = 'QR unavailable';
+    }
+  };
+  refreshQr();
+  VCARD_FIELDS.forEach(f => {
+    document.getElementById('vc-' + f.key).addEventListener('input', () => { refreshPreview(); refreshQr(); });
   });
 
   document.getElementById('vc-copy').onclick = () => {
@@ -819,7 +829,9 @@ render();
 </script>
 <script type="module">
   import QRCode from 'qrcode';
+  import { buildVcard as buildVcardText } from './lib/vcard.js';
   window.QRCode = QRCode;
+  window.buildVcardText = buildVcardText;
   document.dispatchEvent(new Event('qr-ready'));
 </script>
 </body>
