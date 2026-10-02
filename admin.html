@@ -705,10 +705,197 @@ function vcardPreviewHtml(d) {
     </div>`;
 }
 
-async function vcMakeQr(text) {
-  if (window.QRCode) return window.QRCode.toDataURL(text, { margin: 1, width: 240 });
+async function vcMakeQr(text, width = 240) {
+  if (window.QRCode) return window.QRCode.toDataURL(text, { margin: 1, width });
   await new Promise((res) => document.addEventListener('qr-ready', res, { once: true }));
-  return window.QRCode.toDataURL(text, { margin: 1, width: 240 });
+  return window.QRCode.toDataURL(text, { margin: 1, width });
+}
+
+function vcRR(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+}
+
+async function vcDownloadCard() {
+  const btn = document.getElementById('vc-download');
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = 'Preparing…';
+  try {
+    const d = readVcardForm();
+    const vcUrl = location.origin + '/api/vcard';
+    if (!window.buildVcardText) await new Promise((res) => document.addEventListener('qr-ready', res, { once: true }));
+    try {
+      await Promise.all([
+        document.fonts.load('600 36px "Bodoni Moda"', 'A'),
+        document.fonts.load('400 15px "Hanken Grotesk"', 'A'),
+        document.fonts.load('600 12px "Hanken Grotesk"', 'A'),
+        document.fonts.load('400 18px "Material Symbols Outlined"', 'call'),
+      ]);
+    } catch (e) {}
+    const qrSrc = await vcMakeQr(window.buildVcardText(d), 600);
+    const qrImg = new Image();
+    await new Promise((res, rej) => { qrImg.onload = res; qrImg.onerror = rej; qrImg.src = qrSrc; });
+
+    const iconOk = document.fonts.check('400 18px "Material Symbols Outlined"', 'call');
+    const serif = (w, s) => `${w} ${s}px "Bodoni Moda", serif`;
+    const body = (w, s) => `${w} ${s}px "Hanken Grotesk", sans-serif`;
+
+    const W = 860, M = 40, PAD = 46, SCALE = 2;
+    const cardW = W - M * 2;
+    const innerW = cardW - PAD * 2;
+
+    const lines = [];
+    if (d.phone) lines.push(['call', d.phone]);
+    if (d.location) lines.push(['location_on', d.location]);
+    if (d.website) lines.push(['language', d.website]);
+    if (d.email) lines.push(['mail', d.email]);
+    const pills = [d.instagram && 'Instagram', d.tiktok && 'TikTok', d.facebook && 'Facebook'].filter(Boolean);
+
+    let ch = PAD + 34 + 16;
+    if (d.name) ch += 42;
+    if (d.role) ch += 22;
+    ch += 22 + 24 + lines.length * 30;
+    if (pills.length) ch += 18 + 34;
+    ch += PAD;
+    const qrBoxW = 400, qrBoxH = 406;
+    const H = M + ch + 28 + qrBoxH + M;
+
+    const c = document.createElement('canvas');
+    c.width = W * SCALE;
+    c.height = H * SCALE;
+    const ctx = c.getContext('2d');
+    ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = '#fbf9f8';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = '#000000';
+    vcRR(ctx, M, M, cardW, ch, 24);
+    ctx.fill();
+
+    let y = M + PAD;
+    const cx = M + PAD;
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = serif(600, 30);
+    ctx.fillText('Zoskales', cx, y + 28);
+    if (iconOk && document.fonts.check('400 26px "Material Symbols Outlined"', 'diamond')) {
+      ctx.font = '400 26px "Material Symbols Outlined"';
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffdea5';
+      ctx.fillText('diamond', M + cardW - PAD, y + 26);
+      ctx.textAlign = 'left';
+    }
+    y += 34 + 16;
+
+    if (d.name) {
+      ctx.font = serif(600, 36);
+      ctx.fillStyle = '#ffffff';
+      let nm = d.name;
+      if (ctx.measureText(nm).width > innerW) {
+        while (nm.length > 1 && ctx.measureText(nm + '…').width > innerW) nm = nm.slice(0, -1);
+        nm += '…';
+      }
+      ctx.fillText(nm, cx, y + 34);
+      y += 42;
+    }
+    if (d.role) {
+      ctx.font = body(600, 12);
+      ctx.letterSpacing = '0.15em';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      const role = d.role.toUpperCase();
+      ctx.fillText(role.length > 48 ? role.slice(0, 48) + '…' : role, cx, y + 14);
+      ctx.letterSpacing = '0px';
+      y += 22;
+    }
+    ctx.font = body(400, 12);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('Zoskales Diamonds', cx, y + 12);
+    y += 22 + 12;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx, y);
+    ctx.lineTo(cx + innerW, y);
+    ctx.stroke();
+    y += 12;
+
+    lines.forEach(([icon, txt]) => {
+      const ty = y + 20;
+      if (iconOk) {
+        ctx.font = '400 18px "Material Symbols Outlined"';
+        ctx.fillStyle = '#ffdea5';
+        ctx.fillText(icon, cx, ty);
+      }
+      ctx.font = body(400, 15);
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      const tx = cx + (iconOk ? 28 : 0);
+      const maxW = cx + innerW - tx;
+      let s = String(txt);
+      if (ctx.measureText(s).width > maxW) {
+        while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+        s += '…';
+      }
+      ctx.fillText(s, tx, ty);
+      y += 30;
+    });
+
+    if (pills.length) {
+      y += 18;
+      let px = cx;
+      ctx.font = body(500, 11);
+      pills.forEach((label) => {
+        const pw = ctx.measureText(label).width + 28;
+        if (px + pw > cx + innerW) return;
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        vcRR(ctx, px, y, pw, 32, 16);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText(label, px + 14, y + 21);
+        px += pw + 10;
+      });
+    }
+
+    const qbx = (W - qrBoxW) / 2, qby = M + ch + 28;
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#e9e8e7';
+    vcRR(ctx, qbx, qby, qrBoxW, qrBoxH, 20);
+    ctx.fill();
+    ctx.stroke();
+    ctx.drawImage(qrImg, (W - 300) / 2, qby + 28, 300, 300);
+    ctx.textAlign = 'center';
+    ctx.font = body(600, 13);
+    ctx.fillStyle = '#1b1c1c';
+    ctx.fillText('Scan to save contact', W / 2, qby + 344);
+    ctx.font = body(400, 13);
+    ctx.fillStyle = '#747878';
+    ctx.fillText(vcUrl, W / 2, qby + 378);
+    ctx.textAlign = 'left';
+
+    const blob = await new Promise((res) => c.toBlob(res, 'image/png'));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'zoskales-vcard.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    btn.textContent = 'Downloaded ✓';
+  } catch (err) {
+    btn.textContent = 'Failed — retry';
+  }
+  btn.disabled = false;
+  setTimeout(() => { btn.textContent = 'Download QR'; }, 1800);
 }
 
 async function renderVcard(c) {
@@ -756,7 +943,7 @@ async function renderVcard(c) {
             <div class="space-y-3 text-sm min-w-40">
               <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Card link</div>
               <div class="px-3 py-2 rounded-lg bg-surface-container text-xs break-all">${escapeHtml(vcUrl)}</div>
-              <button id="vc-copy" class="px-5 py-2.5 rounded-full border border-primary text-primary text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">Copy Link</button>
+              <button id="vc-download" class="px-5 py-2.5 rounded-full border border-primary text-primary text-xs uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">Download QR</button>
             </div>
           </div>
         </div>
@@ -791,12 +978,7 @@ async function renderVcard(c) {
     document.getElementById('vc-' + f.key).addEventListener('input', () => { refreshPreview(); refreshQr(); });
   });
 
-  document.getElementById('vc-copy').onclick = () => {
-    navigator.clipboard?.writeText(vcUrl);
-    const b = document.getElementById('vc-copy');
-    b.textContent = 'Copied ✓';
-    setTimeout(() => { b.textContent = 'Copy Link'; }, 1500);
-  };
+  document.getElementById('vc-download').onclick = vcDownloadCard;
 
   document.getElementById('vc-save').onclick = async () => {
     const btn = document.getElementById('vc-save');
