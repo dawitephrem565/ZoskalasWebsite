@@ -45,6 +45,30 @@ body { font-family: 'Hanken Grotesk', sans-serif; }
           <p class="text-xs text-on-surface-variant leading-relaxed">Point your phone camera at this code — it opens the default contact-saving page with all details filled in.</p>
         </div>
       </div>
+
+      <div class="mt-6 p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-secondary mb-1">Website QR Code</div>
+        <p class="text-xs text-on-surface-variant leading-relaxed mb-3">Enter any website URL and get a scannable QR code for it.</p>
+        <div class="flex gap-2">
+          <input id="webqr-input" type="text" inputmode="url" placeholder="zoskalesdiamonds.com" class="flex-1 min-w-0 px-4 py-3 rounded-xl border border-outline-variant bg-white text-sm focus:outline-none focus:ring-2 focus:ring-secondary" />
+          <button id="webqr-btn" type="button" class="shrink-0 px-5 py-3 rounded-xl bg-primary text-white text-xs uppercase tracking-widest hover:opacity-90 transition-opacity">Generate</button>
+        </div>
+        <div id="webqr-hint" class="text-[11px] text-red-600 mt-2 hidden">Enter a valid website URL.</div>
+        <div id="webqr-result" class="mt-4 hidden">
+          <div class="flex items-center gap-4">
+            <div class="p-2 bg-white rounded-xl border border-surface-container-high shrink-0">
+              <img id="webqr-img" alt="Website QR code" class="w-36 h-36" />
+            </div>
+            <div class="text-left min-w-0">
+              <div class="text-[10px] uppercase tracking-[0.2em] text-secondary mb-1">Your QR points to</div>
+              <div id="webqr-url" class="text-xs text-on-surface break-all"></div>
+              <button id="webqr-download" type="button" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary text-primary text-[10px] uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all">
+                <span class="material-symbols-outlined text-sm">download</span> Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -121,6 +145,57 @@ body { font-family: 'Hanken Grotesk', sans-serif; }
     } catch (e) {
       $('vcard-qr-loading').textContent = 'QR unavailable';
     }
+
+    const wqInput = $('webqr-input');
+    const wqHint = $('webqr-hint');
+    const wqResult = $('webqr-result');
+    let wqTimer = null;
+
+    async function genWebsiteQr() {
+      const raw = String(wqInput.value || '').trim();
+      if (!raw) {
+        wqResult.classList.add('hidden');
+        wqHint.classList.add('hidden');
+        return;
+      }
+      const url = normUrl(raw);
+      if (!/^https?:\/\/[^\s.]+\.[^\s]{2,}$/i.test(url)) {
+        wqHint.textContent = 'Enter a valid website URL.';
+        wqHint.classList.remove('hidden');
+        wqResult.classList.add('hidden');
+        return;
+      }
+      wqHint.classList.add('hidden');
+      try {
+        const dataUrl = await QRCode.toDataURL(url, { margin: 1, width: 320, errorCorrectionLevel: 'M' });
+        $('webqr-img').src = dataUrl;
+        $('webqr-url').textContent = url;
+        wqResult.classList.remove('hidden');
+      } catch (e) {
+        wqHint.textContent = 'Could not generate QR code.';
+        wqHint.classList.remove('hidden');
+      }
+    }
+
+    wqInput.addEventListener('input', () => {
+      clearTimeout(wqTimer);
+      wqTimer = setTimeout(genWebsiteQr, 300);
+    });
+    wqInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        genWebsiteQr();
+      }
+    });
+    $('webqr-btn').addEventListener('click', genWebsiteQr);
+    $('webqr-download').addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = $('webqr-img').src;
+      a.download = 'website-qr.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
     })();
   </script>
 </body>
