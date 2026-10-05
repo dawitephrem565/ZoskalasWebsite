@@ -54,6 +54,9 @@ body { font-family: 'Hanken Grotesk', sans-serif; }
       <button data-page="vcard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all hover:bg-surface-container">
         <span class="material-symbols-outlined text-xl">contact_page</span> Virtual Card
       </button>
+      <button data-page="magazine" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all hover:bg-surface-container">
+        <span class="material-symbols-outlined text-xl">auto_stories</span> Magazine
+      </button>
     </nav>
     <div class="p-4 border-t border-surface-container-high">
       <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-surface-container transition-all">
@@ -129,15 +132,25 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.add('active');
     currentPage = btn.dataset.page;
     render();
+
   });
 });
 
 async function api(path, opts = {}) {
-  const r = await fetch(API + path, {
-    method: opts.method || 'GET',
+  const method = opts.method || 'GET';
+  const attempt = () => fetch(API + path, {
+    method,
     headers: { 'Content-Type': 'application/json' },
-    body: opts.body ? JSON.stringify(opts.body) : undefined
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+    signal: AbortSignal.timeout(opts.body ? 60000 : 20000),
   });
+  let r;
+  try {
+    r = await attempt();
+  } catch (err) {
+    if (method !== 'GET') throw err;
+    r = await attempt();
+  }
   const data = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(data.error || 'Request failed');
   return data;
@@ -167,11 +180,13 @@ async function render() {
   if (currentPage === 'images') return renderImages(c);
   if (currentPage === 'content') return renderContent(c);
   if (currentPage === 'vcard') return renderVcard(c);
+  if (currentPage === 'magazine') return renderMagazine(c);
 }
 
 async function renderDashboard(c) {
   setTitle('Dashboard', 'Overview of Zoskales premium membership');
   const s = await api('/stats');
+  if (currentPage !== 'dashboard') return;
   c.innerHTML = `
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 fade-up">
       ${statCard('Pending Requests', s.pending, 'hourglass_top', 'bg-secondary-container text-on-secondary-container')}
@@ -1007,14 +1022,189 @@ async function renderVcard(c) {
   };
 }
 
+const MAG_TOTAL = 21;
+const magPageSrc = (n) => `/magazine/pages/page-${String(n).padStart(2, '0')}.jpg`;
+const magWaitImage = (src) => new Promise((res, rej) => {
+  const im = new Image();
+  im.onload = () => res(im);
+  im.onerror = () => rej(new Error('Could not load ' + src));
+  im.src = src;
+});
+
+async function wireMagazineQr() {
+  try {
+    if (!window.QRCode) await new Promise((res) => document.addEventListener('qr-ready', res, { once: true }));
+    const input = document.getElementById('mag-qr-page');
+    const img = document.getElementById('mag-qr-img');
+    const urlEl = document.getElementById('mag-qr-url');
+    if (!input || !img || !urlEl) return;
+    const build = () => {
+      if (!document.getElementById('mag-qr-page')) return;
+      const page = Math.min(MAG_TOTAL, Math.max(1, parseInt(input.value, 10) || 1));
+      const url = `${location.origin}/magazine.html?page=${page}&zoom=1`;
+      urlEl.textContent = url;
+      window.QRCode.toDataURL(url, { width: 360, margin: 2, errorCorrectionLevel: 'M' }, (err, dataUrl) => {
+        if (err || !document.getElementById('mag-qr-img')) return;
+        img.src = dataUrl;
+        img.dataset.url = dataUrl;
+        img.classList.remove('hidden');
+      });
+    };
+    input.addEventListener('change', build);
+    const genBtn = document.getElementById('mag-qr-gen');
+    if (genBtn) genBtn.addEventListener('click', build);
+    const dlBtn = document.getElementById('mag-qr-dl');
+    if (dlBtn) dlBtn.addEventListener('click', () => {
+      if (!img.dataset.url) return;
+      const a = document.createElement('a');
+      a.href = img.dataset.url;
+      a.download = 'zoskales-magazine-design-qr.png';
+      a.click();
+    });
+    build();
+  } catch (err) {
+    console.error('Magazine QR failed:', err);
+  }
+}
+
+async function renderMagazine(c) {
+  setTitle('Magazine', 'Read the design magazine with page-flip navigation');
+  document.getElementById('header-action').innerHTML = '';
+  c.innerHTML = `
+    <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm mb-6 fade-up">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 class="serif text-xl">Current Issue</h3>
+          <p class="text-sm text-on-surface-variant mt-1">Every page of the design magazine — flip with the buttons, arrow keys, or by dragging a page corner.</p>
+        </div>
+        <a id="mag-open" href="/magazine.html" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-primary text-primary text-sm hover:bg-primary hover:text-on-primary transition-all">
+          <span class="material-symbols-outlined text-lg">open_in_new</span> Open Magazine
+        </a>
+      </div>
+    </div>
+    <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm mb-6 fade-up">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <div class="flex-1 min-w-64">
+          <h3 class="serif text-xl mb-2">Scan to View the Design</h3>
+          <p class="text-sm text-on-surface-variant mb-4">Scanning opens the public magazine straight to the selected page, zoomed in on the design.</p>
+          <label for="mag-qr-page" class="text-xs uppercase tracking-widest text-on-surface-variant">Design page</label>
+          <div class="flex items-center gap-3 mt-2 flex-wrap">
+            <input id="mag-qr-page" type="number" min="1" value="1" class="w-24 px-4 py-3 rounded-xl border border-outline-variant bg-white text-sm" />
+            <button id="mag-qr-gen" type="button" class="px-5 py-3 rounded-full bg-primary text-on-primary text-sm hover:opacity-90 transition-all">Generate QR</button>
+            <button id="mag-qr-dl" type="button" class="px-5 py-3 rounded-full border border-outline text-sm hover:bg-surface-container transition-all">Download QR</button>
+          </div>
+          <p id="mag-qr-url" class="text-xs text-on-surface-variant mt-3 break-all"></p>
+        </div>
+        <img id="mag-qr-img" alt="Magazine design QR code" class="hidden w-44 h-44 rounded-xl bg-white p-2 border border-outline-variant" />
+      </div>
+    </div>
+    <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm fade-up">
+      <div class="flex items-center justify-center gap-5 mb-5">
+        <button id="mag-prev" type="button" aria-label="Previous page" class="w-11 h-11 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all disabled:opacity-40">
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <span id="mag-counter" class="text-xs uppercase tracking-widest text-on-surface-variant min-w-32 text-center">– / –</span>
+        <button id="mag-next" type="button" aria-label="Next page" class="w-11 h-11 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all disabled:opacity-40">
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+      <div class="flex justify-center">
+        <div id="mag-flip" style="width:100%;max-width:960px;min-height:560px;"></div>
+      </div>
+      <div id="mag-loading" class="py-16 text-center text-sm text-on-surface-variant">Loading magazine…</div>
+      <div id="mag-error" class="hidden py-16 text-center text-sm text-red-600"></div>
+    </div>`;
+
+  wireMagazineQr();
+  try {
+    if (!window.PageFlip) {
+      await new Promise((res) => document.addEventListener('flip-ready', res, { once: true }));
+    }
+    const total = MAG_TOTAL;
+    for (const n of [1, 2]) {
+      if (n > total) continue;
+      const el = document.getElementById('mag-loading');
+      if (el) el.textContent = `Loading page ${n} of ${total}…`;
+      await magWaitImage(magPageSrc(n));
+    }
+
+    if (currentPage !== 'magazine') return;
+    const flipEl = document.getElementById('mag-flip');
+    if (!flipEl) return;
+    flipEl.innerHTML = Array.from({ length: total }, (_, i) => {
+      const n = i + 1;
+      return `<div class="bg-white"><img src="${magPageSrc(n)}" alt="Magazine page ${n}" style="width:100%;height:100%;object-fit:contain;display:block;"/></div>`;
+    }).join('');
+    const loadingEl = document.getElementById('mag-loading');
+    if (loadingEl) loadingEl.classList.add('hidden');
+
+    const flip = new window.PageFlip(flipEl, {
+      width: 400,
+      height: 566,
+      size: 'stretch',
+      minWidth: 260,
+      maxWidth: 960,
+      minHeight: 368,
+      maxHeight: 1358,
+      drawShadow: true,
+      flippingTime: 800,
+      showCover: true,
+      usePortrait: true,
+      mobileScrollSupport: false,
+    });
+    flip.loadFromHTML(flipEl.querySelectorAll('div'));
+
+    const counter = document.getElementById('mag-counter');
+    const prevBtn = document.getElementById('mag-prev');
+    const nextBtn = document.getElementById('mag-next');
+    const sync = () => {
+      const idx = flip.getCurrentPageIndex();
+      if (counter) counter.textContent = `${idx + 1} / ${flip.getPageCount()}`;
+      if (prevBtn) prevBtn.disabled = idx <= 0;
+      if (nextBtn) nextBtn.disabled = idx >= flip.getPageCount() - 1;
+    };
+    flip.on('flip', sync);
+    sync();
+    if (prevBtn) prevBtn.onclick = () => flip.flipPrev();
+    if (nextBtn) nextBtn.onclick = () => flip.flipNext();
+
+    const keyHandler = (e) => {
+      const active = document.activeElement;
+      if (active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
+      if (!document.getElementById('mag-flip')) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      if (e.key === 'ArrowRight') flip.flipNext();
+      if (e.key === 'ArrowLeft') flip.flipPrev();
+    };
+    document.addEventListener('keydown', keyHandler);
+  } catch (err) {
+    const loadingEl = document.getElementById('mag-loading');
+    const errEl = document.getElementById('mag-error');
+    if (loadingEl) loadingEl.classList.add('hidden');
+    if (errEl) {
+      errEl.textContent = 'Could not load the magazine: ' + (err && err.message ? err.message : err);
+      errEl.classList.remove('hidden');
+    }
+  }
+}
+
 render();
+const initialPage = location.hash.replace('#', '');
+if (initialPage && document.querySelector(`.nav-item[data-page="${initialPage}"]`)) {
+  document.querySelector(`.nav-item[data-page="${initialPage}"]`).click();
+}
 </script>
 <script type="module">
   import QRCode from 'qrcode';
   import { buildVcard as buildVcardText } from './lib/vcard.js';
+  import { PageFlip } from 'page-flip';
   window.QRCode = QRCode;
   window.buildVcardText = buildVcardText;
+  window.PageFlip = PageFlip;
   document.dispatchEvent(new Event('qr-ready'));
+  document.dispatchEvent(new Event('flip-ready'));
 </script>
 </body>
 </html>

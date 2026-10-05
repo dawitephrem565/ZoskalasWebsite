@@ -11,6 +11,7 @@ export default defineConfig({
         main: path.resolve(__dirname, 'index.html'),
         admin: path.resolve(__dirname, 'admin.html'),
         vcard: path.resolve(__dirname, 'vcard.html'),
+        magazine: path.resolve(__dirname, 'magazine.html'),
       },
     },
   },
